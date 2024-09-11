@@ -1,0 +1,74 @@
+[0.006s] Invoking command in '/home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples': AMENT_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble LD_LIBRARY_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/michaelangelo/miles_morales_turtlebot3_ws/src/DynamixelSDK/dynamixel_sdk_examples -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples
+[0.038s] -- The C compiler identification is GNU 11.4.0
+[0.069s] -- The CXX compiler identification is GNU 11.4.0
+[0.072s] -- Detecting C compiler ABI info
+[0.113s] -- Detecting C compiler ABI info - done
+[0.119s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.119s] -- Detecting C compile features
+[0.119s] -- Detecting C compile features - done
+[0.121s] -- Detecting CXX compiler ABI info
+[0.167s] -- Detecting CXX compiler ABI info - done
+[0.171s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.171s] -- Detecting CXX compile features
+[0.171s] -- Detecting CXX compile features - done
+[0.172s] -- Found ament_cmake: 1.3.10 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.254s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.288s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.301s] -- Found dynamixel_sdk: 3.7.60 (/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk/share/dynamixel_sdk/cmake)
+[0.301s] -- Found dynamixel_sdk_custom_interfaces: 3.7.60 (/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/share/dynamixel_sdk_custom_interfaces/cmake)
+[0.318s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.320s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.324s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.330s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.337s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.350s] -- Found rclcpp: 16.0.10 (/opt/ros/humble/share/rclcpp/cmake)
+[0.368s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.369s] -- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.420s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[0.438s] -- Found FastRTPS: /opt/ros/humble/include  
+[0.460s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.465s] -- Looking for pthread.h
+[0.506s] -- Looking for pthread.h - found
+[0.506s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[0.551s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[0.552s] -- Found Threads: TRUE  
+[0.577s] -- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.619s] -- Added test 'copyright' to check source files copyright and LICENSE
+[0.620s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[0.620s] -- Configured cppcheck include dirs: /home/michaelangelo/miles_morales_turtlebot3_ws/src/DynamixelSDK/dynamixel_sdk_examples/include
+[0.620s] -- Configured cppcheck exclude dirs and/or files: 
+[0.620s] -- Added test 'cpplint' to check C / C++ code against the Google style
+[0.620s] -- Configured cpplint exclude dirs and/or files: 
+[0.620s] -- Added test 'lint_cmake' to check CMake code style
+[0.621s] -- Added test 'uncrustify' to check C / C++ code style
+[0.621s] -- Configured uncrustify additional arguments: 
+[0.621s] -- Added test 'xmllint' to check XML markup files
+[0.621s] -- Configuring done
+[0.625s] -- Generating done
+[0.626s] -- Build files have been written to: /home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples
+[0.630s] Invoked command in '/home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples' returned '0': AMENT_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble LD_LIBRARY_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/michaelangelo/miles_morales_turtlebot3_ws/src/DynamixelSDK/dynamixel_sdk_examples -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples
+[0.631s] Invoking command in '/home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples': AMENT_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble LD_LIBRARY_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples -- -j24 -l24
+[0.661s] [ 50%] [32mBuilding CXX object CMakeFiles/read_write_node.dir/src/read_write_node.cpp.o[0m
+[4.698s] [100%] [32m[1mLinking CXX executable read_write_node[0m
+[4.895s] [100%] Built target read_write_node
+[4.904s] Invoked command in '/home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples' returned '0': AMENT_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble LD_LIBRARY_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples -- -j24 -l24
+[4.918s] Invoking command in '/home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples': AMENT_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble LD_LIBRARY_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --install /home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples
+[4.925s] -- Install configuration: ""
+[4.925s] -- Execute custom install script
+[4.925s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/lib/dynamixel_sdk_examples/read_write_node
+[4.931s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/ament_index/resource_index/package_run_dependencies/dynamixel_sdk_examples
+[4.937s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/ament_index/resource_index/parent_prefix_path/dynamixel_sdk_examples
+[4.943s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/environment/ament_prefix_path.sh
+[4.949s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/environment/ament_prefix_path.dsv
+[4.954s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/environment/path.sh
+[4.960s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/environment/path.dsv
+[4.966s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/local_setup.bash
+[4.972s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/local_setup.sh
+[4.978s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/local_setup.zsh
+[4.983s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/local_setup.dsv
+[4.988s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/package.dsv
+[4.994s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/ament_index/resource_index/packages/dynamixel_sdk_examples
+[5.000s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/cmake/dynamixel_sdk_examplesConfig.cmake
+[5.005s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/cmake/dynamixel_sdk_examplesConfig-version.cmake
+[5.011s] -- Symlinking: /home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_examples/share/dynamixel_sdk_examples/package.xml
+[5.019s] Invoked command in '/home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples' returned '0': AMENT_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble LD_LIBRARY_PATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/michaelangelo/miles_morales_turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --install /home/michaelangelo/miles_morales_turtlebot3_ws/build/dynamixel_sdk_examples
