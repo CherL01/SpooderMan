@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'view_image_raw = spooderman_object_follower.view_image_raw:main'
+            'find_object = spooderman_object_follower.find_object:main',
+            'rotate_robot = spooderman_object_follower.rotate_robot:main',
         ],
     },
 )

@@ -1,0 +1,25 @@
+[0.282s] Invoking command in '/home/michaelangelo/SpooderMan/dev_ws/src/spooderman_object_follower': PYTHONPATH=/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/spooderman_object_follower build --build-base /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build install --record /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/install.log --single-version-externally-managed install_data
+[0.386s] running egg_info
+[0.386s] writing ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/PKG-INFO
+[0.386s] writing dependency_links to ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/dependency_links.txt
+[0.386s] writing entry points to ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/entry_points.txt
+[0.386s] writing requirements to ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/requires.txt
+[0.386s] writing top-level names to ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/top_level.txt
+[0.388s] reading manifest file '../../build/spooderman_object_follower/spooderman_object_follower.egg-info/SOURCES.txt'
+[0.388s] adding license file 'LICENSE'
+[0.388s] writing manifest file '../../build/spooderman_object_follower/spooderman_object_follower.egg-info/SOURCES.txt'
+[0.388s] running build
+[0.388s] running build_py
+[0.388s] copying spooderman_object_follower/find_object.py -> /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build/lib/spooderman_object_follower
+[0.388s] running install
+[0.389s] running install_lib
+[0.389s] copying /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build/lib/spooderman_object_follower/find_object.py -> /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman_object_follower
+[0.389s] byte-compiling /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman_object_follower/find_object.py to find_object.cpython-310.pyc
+[0.390s] running install_data
+[0.390s] running install_egg_info
+[0.392s] removing '/home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman_object_follower-0.0.0-py3.10.egg-info' (and everything under it)
+[0.392s] Copying ../../build/spooderman_object_follower/spooderman_object_follower.egg-info to /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman_object_follower-0.0.0-py3.10.egg-info
+[0.392s] running install_scripts
+[0.402s] Installing find_object script to /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/spooderman_object_follower
+[0.402s] writing list of installed files to '/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/install.log'
+[0.411s] Invoked command in '/home/michaelangelo/SpooderMan/dev_ws/src/spooderman_object_follower' returned '0': PYTHONPATH=/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/spooderman_object_follower build --build-base /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build install --record /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/install.log --single-version-externally-managed install_data

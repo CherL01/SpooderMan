@@ -1,0 +1,27 @@
+[0.285s] Invoking command in '/home/michaelangelo/SpooderMan/dev_ws/src/spooderman_object_follower': PYTHONPATH=/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/spooderman_object_follower build --build-base /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build install --record /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/install.log --single-version-externally-managed install_data
+[0.397s] running egg_info
+[0.397s] writing ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/PKG-INFO
+[0.397s] writing dependency_links to ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/dependency_links.txt
+[0.397s] writing entry points to ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/entry_points.txt
+[0.397s] writing requirements to ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/requires.txt
+[0.397s] writing top-level names to ../../build/spooderman_object_follower/spooderman_object_follower.egg-info/top_level.txt
+[0.398s] reading manifest file '../../build/spooderman_object_follower/spooderman_object_follower.egg-info/SOURCES.txt'
+[0.398s] adding license file 'LICENSE'
+[0.398s] writing manifest file '../../build/spooderman_object_follower/spooderman_object_follower.egg-info/SOURCES.txt'
+[0.398s] running build
+[0.398s] running build_py
+[0.399s] copying spooderman_object_follower/rotate_robot.py -> /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build/lib/spooderman_object_follower
+[0.399s] running install
+[0.399s] running install_lib
+[0.399s] copying /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build/lib/spooderman_object_follower/rotate_robot.py -> /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman_object_follower
+[0.399s] byte-compiling /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman_object_follower/rotate_robot.py to rotate_robot.cpython-310.pyc
+[0.399s] Sorry: IndentationError: unindent does not match any outer indentation level (rotate_robot.py, line 41)
+[0.399s] running install_data
+[0.399s] running install_egg_info
+[0.400s] removing '/home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman_object_follower-0.0.0-py3.10.egg-info' (and everything under it)
+[0.401s] Copying ../../build/spooderman_object_follower/spooderman_object_follower.egg-info to /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman_object_follower-0.0.0-py3.10.egg-info
+[0.401s] running install_scripts
+[0.410s] Installing find_object script to /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/spooderman_object_follower
+[0.410s] Installing rotate_robot script to /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/spooderman_object_follower
+[0.410s] writing list of installed files to '/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/install.log'
+[0.420s] Invoked command in '/home/michaelangelo/SpooderMan/dev_ws/src/spooderman_object_follower' returned '0': PYTHONPATH=/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/spooderman_object_follower build --build-base /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build install --record /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/install.log --single-version-externally-managed install_data
