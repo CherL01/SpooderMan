@@ -17,7 +17,7 @@ class VelocityGenerator(Node):
 		
 		#Set up QoS Profiles for passing images over WiFi
         image_qos_profile = QoSProfile(
-		    reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT,
+		    reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE,
 		    history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST,
 		    durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE,
 		    depth=1
@@ -42,17 +42,18 @@ class VelocityGenerator(Node):
 
     def coords_callback(self, msg):
         self.x_coord = msg.data
+        self.get_logger().info('received center (x-coord): "%s"' % msg.data)
 
     def get_spin_direction(self):
 
         left = 0
         right = 255
-        center = (left + right) // 2
+        quarter = (left + right) // 4
 
-        if self.x_coord < center:
+        if self.x_coord < (left + quarter):
             self.direction = 1
         
-        elif self.x_coord > center:
+        elif self.x_coord > (right - quarter):
             self.direction = -1
 
         else:
@@ -83,6 +84,7 @@ def main():
         velocity_generator.publish_spin_velocity()
 
 	#Clean up and shutdown.
+
     velocity_generator.destroy_node()  
     rclpy.shutdown()
 
