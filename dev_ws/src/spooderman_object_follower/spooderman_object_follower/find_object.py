@@ -40,9 +40,17 @@ class ObjectDetector(Node):
 		
 		#Set up QoS Profiles for passing images over WiFi
 		image_qos_profile = QoSProfile(
-		    reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE,
-		    history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST,
-		    durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE,
+		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
+		    history=QoSHistoryPolicy.KEEP_LAST,
+		    durability=QoSDurabilityPolicy.VOLATILE,
+		    depth=1
+		)
+
+		#Set up QoS Profiles for passing numbers over WiFi
+		num_qos_profile = QoSProfile(
+		    reliability=QoSReliabilityPolicy.RELIABLE,
+		    history=QoSHistoryPolicy.KEEP_LAST,
+		    durability=QoSDurabilityPolicy.VOLATILE,
 		    depth=1
 		)
 
@@ -59,7 +67,7 @@ class ObjectDetector(Node):
 		self.coordinate_publisher = self.create_publisher(
 				Int64, 
 				'/object_detect/coords',
-				image_qos_profile)
+				num_qos_profile)
 		self.coordinate_publisher
 
 		# additional variables added
@@ -119,20 +127,28 @@ class ObjectDetector(Node):
 		# Find contours in the mask
 		contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-		# Loop over contours
-		for contour in contours:
-			# Calculate the area and ignore small areas to reduce noise
-			area = cv2.contourArea(contour)
-			if area > 500:
-				# Get the center and radius of the enclosing circle
-				(x, y), radius = cv2.minEnclosingCircle(contour)
-				center = (int(x), int(y))
-				radius = int(radius)
+		# # Loop over contours
+		# for contour in contours:
+		# 	# Calculate the area and ignore small areas to reduce noise
+		# 	area = cv2.contourArea(contour)
+		# 	if area > 500:
 
-				# Draw the circle and centroid on the img
-				cv2.circle(img, center, radius, (0, 255, 0), 2)
-				cv2.circle(img, center, 5, (0, 0, 255), -1)
-				self.center = center
+		if len(contours) > 0:
+			contour = max(contours, key=cv2.contourArea)
+
+			# Get the center and radius of the enclosing circle
+			(x, y), radius = cv2.minEnclosingCircle(contour)
+			center = (int(x), int(y))
+			radius = int(radius)
+
+			# Draw the circle and centroid on the img
+			cv2.circle(img, center, radius, (0, 255, 0), 2)
+			cv2.circle(img, center, 5, (0, 0, 255), -1)
+			self.center = center
+
+		else:
+			half = 255 // 2
+			self.center = (half, half)
 
 		# Display the result
 		self.show_image(img)

@@ -15,27 +15,36 @@ class VelocityGenerator(Node):
 		# Creates the node.
         super().__init__('velocity_generator')
 		
-		#Set up QoS Profiles for passing images over WiFi
-        image_qos_profile = QoSProfile(
-		    reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE,
-		    history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST,
-		    durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE,
+		# #Set up QoS Profiles for passing images over WiFi
+        # image_qos_profile = QoSProfile(
+		#     reliability=QoSReliabilityPolicy.BEST_EFFORT,
+		#     history=QoSHistoryPolicy.KEEP_LAST,
+		#     durability=QoSDurabilityPolicy.VOLATILE,
+		#     depth=1
+		# )
+
+        #Set up QoS Profiles for passing numbers over WiFi
+        num_qos_profile = QoSProfile(
+		    reliability=QoSReliabilityPolicy.RELIABLE,
+		    history=QoSHistoryPolicy.KEEP_LAST,
+		    durability=QoSDurabilityPolicy.VOLATILE,
 		    depth=1
 		)
+
 
 		# Declare that the velocity_generator node is subcribing to the /object_detect/coords topic.
         self.coordinate_subscriber = self.create_subscription(
 				Int64,
 				'/object_detect/coords',
                 self.coords_callback,
-				image_qos_profile)
+				num_qos_profile)
         self.coordinate_subscriber # Prevents unused variable warning.
 
         # create velocity publisher
         self.velocity_publisher = self.create_publisher(
 				Twist, 
 				'/cmd_vel',
-				image_qos_profile)
+				num_qos_profile)
         self.velocity_publisher
 
         self.x_coord = None
@@ -48,12 +57,12 @@ class VelocityGenerator(Node):
 
         left = 0
         right = 255
-        quarter = (left + right) // 4
+        third = (left + right) // 3
 
-        if self.x_coord < (left + quarter):
+        if self.x_coord < (left + third):
             self.direction = 1
         
-        elif self.x_coord > (right - quarter):
+        elif self.x_coord > (right - third):
             self.direction = -1
 
         else:
@@ -61,7 +70,7 @@ class VelocityGenerator(Node):
 
     def get_spin_velocity(self):
         self.get_spin_direction()
-        speed = 2
+        speed = 1
         self.vel = float(self.direction * speed)
 
     def publish_spin_velocity(self):
