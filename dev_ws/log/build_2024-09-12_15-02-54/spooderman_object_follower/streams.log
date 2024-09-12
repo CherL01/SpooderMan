@@ -1,0 +1,21 @@
+[0.416s] Invoking command in '/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower': PYTHONPATH=/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --editable --build-directory /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build --no-deps symlink_data
+[0.545s] running develop
+[0.545s] /usr/lib/python3/dist-packages/setuptools/command/easy_install.py:158: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.
+[0.545s]   warnings.warn(
+[0.615s] running egg_info
+[0.615s] writing spooderman_object_follower.egg-info/PKG-INFO
+[0.615s] writing dependency_links to spooderman_object_follower.egg-info/dependency_links.txt
+[0.615s] writing entry points to spooderman_object_follower.egg-info/entry_points.txt
+[0.615s] writing requirements to spooderman_object_follower.egg-info/requires.txt
+[0.615s] writing top-level names to spooderman_object_follower.egg-info/top_level.txt
+[0.616s] reading manifest file 'spooderman_object_follower.egg-info/SOURCES.txt'
+[0.616s] writing manifest file 'spooderman_object_follower.egg-info/SOURCES.txt'
+[0.617s] running build_ext
+[0.617s] Creating /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages/spooderman-object-follower.egg-link (link to .)
+[0.617s] Installing find_object script to /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/spooderman_object_follower
+[0.617s] Installing rotate_robot script to /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/spooderman_object_follower
+[0.617s] 
+[0.617s] Installed /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower
+[0.618s] running symlink_data
+[0.618s] symbolically linking /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/launch/spooderman_object_follower_launch.py -> /home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/share/spooderman_object_follower
+[0.631s] Invoked command in '/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower' returned '0': PYTHONPATH=/home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/michaelangelo/SpooderMan/dev_ws/install/spooderman_object_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --editable --build-directory /home/michaelangelo/SpooderMan/dev_ws/build/spooderman_object_follower/build --no-deps symlink_data
