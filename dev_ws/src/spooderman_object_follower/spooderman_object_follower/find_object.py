@@ -3,6 +3,9 @@
 # Georgia Institute of Technology
 # Sean Wilson, 2022
 
+# Yi Lian
+# Evan Rosenthal
+
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import CompressedImage

@@ -1,3 +1,6 @@
+# Yi Lian
+# Evan Rosenthal
+
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSReliabilityPolicy, QoSHistoryPolicy
