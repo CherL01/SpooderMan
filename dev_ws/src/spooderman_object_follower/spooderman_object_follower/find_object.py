@@ -138,7 +138,7 @@ class ObjectDetector(Node):
 
 			# Get the center and radius of the enclosing circle
 			(x, y), radius = cv2.minEnclosingCircle(contour)
-			center = (int(x), int(y))
+			center = (int(x), int(y))(self.get_image()) 
 			radius = int(radius)
 
 			# Draw the circle and centroid on the img
@@ -168,9 +168,9 @@ def main():
 
 		# if(object_detector._display_image):
 			# object_detector.show_image(object_detector.get_image())	
-		if object_detector.get_user_input() == ord('q'):
-			cv2.destroyAllWindows()
-			break
+		# if object_detector.get_user_input() == ord('q'):
+		# 	cv2.destroyAllWindows()
+		# 	break
 
 	#Clean up and shutdown.
 	object_detector.destroy_node()  
