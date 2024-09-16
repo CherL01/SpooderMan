@@ -23,7 +23,7 @@ class ObjectDetector(Node):
 		super().__init__('object_detector')
 
 		# Set Parameters
-		self.declare_parameter('show_image_bool', True)
+		self.declare_parameter('show_image_bool', False)
 		self.declare_parameter('window_name', "Raw Image")
 
 		#Determine Window Showing Based on Input
@@ -150,8 +150,8 @@ class ObjectDetector(Node):
 			half = 255 // 2
 			self.center = (half, half)
 
-		# Display the result
-		self.show_image(img)
+		# # Display the result
+		# self.show_image(img)
 
 def main():
 	rclpy.init() #init routine needed for ROS2.

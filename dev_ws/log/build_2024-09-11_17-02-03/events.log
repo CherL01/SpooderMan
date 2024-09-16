@@ -1,4 +1,0 @@
-[0.000000] (-) TimerEvent: {}
-[0.000233] (-) JobUnselected: {'identifier': 'py_pubsub'}
-[0.000257] (-) JobUnselected: {'identifier': 'spooderman_object_follower'}
-[0.000510] (-) EventReactorShutdown: {}
