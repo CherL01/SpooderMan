@@ -138,7 +138,7 @@ class ObjectDetector(Node):
 
 			# Get the center and radius of the enclosing circle
 			(x, y), radius = cv2.minEnclosingCircle(contour)
-			center = (int(x), int(y))(self.get_image()) 
+			center = (int(x), int(y))
 			radius = int(radius)
 
 			# Draw the circle and centroid on the img
