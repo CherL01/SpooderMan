@@ -150,7 +150,7 @@ class ObjectDetector(Node):
 			self.center = center
 
 		else:
-			half = 255 // 2
+			half = 320 // 2
 			self.center = (half, half)
 
 		# # Display the result
@@ -161,13 +161,18 @@ def main():
 	object_detector = ObjectDetector() #Create class object to be used.
 
 	while rclpy.ok():
-		rclpy.spin_once(object_detector) # Trigger callback processing.
+		
+		try:
+			rclpy.spin_once(object_detector) # Trigger callback processing.
 
-		# track location of object
-		object_detector.track_location(object_detector.get_image()) 
+            # track location of object
+			object_detector.track_location(object_detector.get_image()) 
 
-		# publish x coordinate of object
-		object_detector.send_coords()
+            # publish x coordinate of object
+			object_detector.send_coords()
+			
+		except KeyboardInterrupt:
+			break
 
 		# if(object_detector._display_image):
 			# object_detector.show_image(object_detector.get_image())	

@@ -92,8 +92,13 @@ def main():
     velocity_generator = VelocityGenerator() #Create class object to be used.
     
     while rclpy.ok():
-        rclpy.spin_once(velocity_generator) # Trigger callback processing.
-        velocity_generator.publish_spin_velocity()
+
+        try:
+            rclpy.spin_once(velocity_generator) # Trigger callback processing.
+            velocity_generator.publish_spin_velocity()
+
+        except KeyboardInterrupt:
+            break
 
 	#Clean up and shutdown.
 
