@@ -87,7 +87,7 @@ class ObjectDetector(Node):
 		# The "CompressedImage" is transformed to a color image in BGR space and is store in "_imgBGR"
         self._imgBGR = CvBridge().compressed_imgmsg_to_cv2(CompressedImage, "bgr8")
         self.height, self.width, self.channels = self._imgBGR.shape
-        self.get_logger().info(f'image size (height, width, channels): {self.height}, {self.width}, {self.channels}')	
+        # self.get_logger().info(f'image size (height, width, channels): {self.height}, {self.width}, {self.channels}')	
 		
         if(self._display_image):
 			# Display the image in a window
@@ -96,12 +96,10 @@ class ObjectDetector(Node):
     def send_x_coord(self):
 
         if self.center != None:
-            x, y = self.center
-            r = self.radius
             msg = Float32MultiArray()
             msg.data = self.x_coords
             self.coordinate_publisher.publish(msg)
-            self.get_logger().info(f'center (x-coord): {x}, radius: {r}')	
+            self.get_logger().info(f'x coords: {self.x_coords}')	
 			
     def send_angle(self):
 	
@@ -168,9 +166,6 @@ class ObjectDetector(Node):
 
             self.center = math.inf, math.inf
             self.x_coords = [math.inf, math.inf, math.inf]
-
-        # x, y = self.center
-        # self.x_coords = [float(x - self.radius), float(x), float(x + self.radius)]
 
 		# Display the result
         self.show_image(img)

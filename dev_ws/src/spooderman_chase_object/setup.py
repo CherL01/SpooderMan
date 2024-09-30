@@ -26,6 +26,7 @@ setup(
         'console_scripts': [
             'detect_object = spooderman_chase_object.detect_object:main',
             'get_object_range = spooderman_chase_object.get_object_range:main',
+            'chase_object = spooderman_chase_object.chase_object:main',
         ],
     },
 )
