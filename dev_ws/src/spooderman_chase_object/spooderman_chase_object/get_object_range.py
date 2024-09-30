@@ -22,16 +22,16 @@ class GetObjectRange(Node):
 
         # Declare that the velocity_generator node is subcribing to the /object_detect/coords topic.
         self.coordinate_subscriber = self.create_subscription(
-				Float32,
-				'/object_detect/x_coord',
+				Float32MultiArray,
+				'/object_detect/x_coords',
                 self.coords_callback,
 				num_qos_profile)
         self.coordinate_subscriber # Prevents unused variable warning.
 
         # Declare that the velocity_generator node is subcribing to the /object_detect/coords topic.
         self.angle_subscriber = self.create_subscription(
-				Float32,
-				'/object_detect/angle',
+				Float32MultiArray,
+				'/object_detect/angles',
                 self.angle_callback,
 				num_qos_profile)
         self.angle_subscriber # Prevents unused variable warning.
@@ -42,8 +42,8 @@ class GetObjectRange(Node):
             self.lidar_callback,
             num_qos_profile)
         
-        self.x_coord = None
-        self.angle = None
+        self.x_coords = None
+        self.angles = None
         self.ranges = None
         self.angles = None
         self.distance = None
@@ -56,25 +56,31 @@ class GetObjectRange(Node):
         self.dist_and_angle_publisher
 
     def coords_callback(self, msg):
-        self.x_coord = msg.data
-        self.get_logger().info('received center (x-coord): "%s"' % msg.data)
+        self.x_coords = msg.data
+        self.get_logger().info(f'received x coords: {self.x_coords}')
 
     def angle_callback(self, msg):
-        self.angle = msg.data
-        self.get_logger().info('received center (angle in deg): "%s"' % msg.data)
+        self.angles = msg.data
+        self.get_logger().info(f'received angles (deg): {self.angles}')
 
     def lidar_callback(self, msg):
         self.ranges = msg.ranges
+        self.range_limits = [msg.range_min, msg.range_max]
+
+        for dist in self.ranges:
+            if (dist < self.range_limits[0]) or (dist > self.range_limits[1]):
+                
+
         self.angles = [msg.angle_min, msg.angle_max, msg.angle_increment]
         # min_distance = min(self.ranges)
         # self.get_logger().info('lidar ranges: "%s"' %msg.ranges)
         # self.get_logger().info('lidar min distance: "%s"' %min_distance)
         self.get_logger().info(f'lidar angles: "{self.angles}')
-        self.calculate_distance()
+        # self.calculate_distance()
 
-    def calculate_distance(self):
+    def calculate_distance(self, angle):
         increment = self.angles[2]
-        angle_rad = self.angle * math.pi / 180
+        angle_rad = angle * math.pi / 180
         self.get_logger().info(f'angle (rad): {angle_rad}')
         distance_idx = int(angle_rad / increment)
         self.get_logger().info(f'distance index: {distance_idx}')

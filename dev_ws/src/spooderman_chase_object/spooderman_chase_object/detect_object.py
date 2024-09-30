@@ -9,7 +9,7 @@ import numpy as np
 import cv2
 from cv_bridge import CvBridge
 
-from std_msgs.msg import Int64, Float32
+from std_msgs.msg import Int64, Float32, Float32MultiArray
 
 import math
 
@@ -54,7 +54,7 @@ class ObjectDetector(Node):
 		#Declare that the minimal_video_subscriber node is subcribing to the /camera/image/compressed topic.
         self._video_subscriber = self.create_subscription(
 				CompressedImage,
-				# '/camera/image/compressed',
+				# '/camera/image/compressed',source ~/PaulB/[LabX]/install/setup.bash
 				'/image_raw/compressed',
 				self._image_callback,
 				image_qos_profile)
@@ -62,20 +62,22 @@ class ObjectDetector(Node):
 
 		# create center coordinate publisher
         self.coordinate_publisher = self.create_publisher(
-				Float32, 
-				'/object_detect/x_coord',
+				Float32MultiArray, 
+				'/object_detect/x_coords',
 				num_qos_profile)
         self.coordinate_publisher
 		
-        # create center coordinate publisher
+        # create center coordinate publisherAttributeError: 'numpy.ndarray' object has no attribute 'shapeFloat32'
         self.angle_publisher = self.create_publisher(
-				Float32, 
-				'/object_detect/angle',
+				Float32MultiArray, 
+				'/object_detect/angles',
 				num_qos_profile)
         self.angle_publisher
 
 		# additional variables added
         self.center = None
+        self.radius = None
+        self.x_coords = None
         self.height = None
         self.width = None
         self.channels = None
@@ -95,23 +97,23 @@ class ObjectDetector(Node):
 
         if self.center != None:
             x, y = self.center
-            msg = Float32()
-            msg.data = float(x)
+            r = self.radius
+            msg = Float32MultiArray()
+            msg.data = self.x_coords
             self.coordinate_publisher.publish(msg)
-            self.get_logger().info('center (x-coord): "%s"' % msg.data)	
+            self.get_logger().info(f'center (x-coord): {x}, radius: {r}')	
 			
     def send_angle(self):
 	
         if self.center != None:
-            angle = self.get_angle()
-            msg = Float32()
-            msg.data = angle
+            angles = [self.get_angle(x) for x in self.x_coords]
+            msg = Float32MultiArray()
+            msg.data = angles
             self.angle_publisher.publish(msg)
-            self.get_logger().info('center (angle in deg): "%s"' % msg.data)	
+            self.get_logger().info(f'angles (deg): {angles}')	
 			
-    def get_angle(self):
+    def get_angle(self, x):
             
-        x, y = self.center
         half = self.width / 2
         angle = (half - x) * self.fov / self.width # 62.2 deg / 320 pixels
         if angle < 0:
@@ -154,10 +156,21 @@ class ObjectDetector(Node):
             cv2.circle(img, center, radius, (0, 255, 0), 2)
             cv2.circle(img, center, 5, (0, 0, 255), -1)
             self.center = center
+            self.radius = radius
+
+            x, y = self.center
+            self.x_coords = [float(x - self.radius), float(x), float(x + self.radius)]
 
         else:
             half = self.width / 2
             self.center = (half, half)
+            self.radius = 0
+
+            self.center = math.inf, math.inf
+            self.x_coords = [math.inf, math.inf, math.inf]
+
+        # x, y = self.center
+        # self.x_coords = [float(x - self.radius), float(x), float(x + self.radius)]
 
 		# Display the result
         self.show_image(img)
