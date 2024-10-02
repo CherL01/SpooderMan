@@ -159,8 +159,8 @@ def main():
 
         except KeyboardInterrupt:
             vel = Twist()
-            vel.linear.x = 0
-            vel.angular.z = 0
+            vel.linear.x = 0.0
+            vel.angular.z = 0.0
             velocity_generator.velocity_publisher.publish(vel)
             break
 
