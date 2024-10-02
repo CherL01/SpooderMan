@@ -58,7 +58,7 @@ class GetObjectRange(Node):
         self.angle = None
         self.distance = None
 
-        self.target_distance = 0.4 # meters
+        self.target_distance = 0.35 # meters
 
         # create object distance and angle publisher
         self.dist_and_angle_publisher = self.create_publisher(
@@ -97,7 +97,7 @@ class GetObjectRange(Node):
 
     def calculate_distance(self, angle):
 
-        if angle != -math.inf: # angle is not -inf = object in frame
+        if angle != -math.inf: # angle is not -inf = object in frame # NEED TO FIX NONE
 
             increment = self.angle_increment
             angle_rad = angle * math.pi / 180
@@ -163,9 +163,10 @@ def main(args=None):
         try:
             rclpy.spin_once(object_dist)
 
-            object_dist.average_distance()
-            object_dist.send_distance_and_angle()
+            if object_dist.ranges is not None:
 
+                object_dist.average_distance()
+                object_dist.send_distance_and_angle()
 
         except KeyboardInterrupt:
             break

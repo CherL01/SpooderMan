@@ -11,76 +11,11 @@ from geometry_msgs.msg import Twist
 
 ### https://github.com/IvayloAsenov/Wall-Follower-Robot-ROS/blob/master/wall_follower.py
 
-class PID_angle:
-    def __init__(self, Kp, Ki, Kd, dt):
-        self.Kp = Kp
-        self.Kd = Kd
-        self.Ki = Ki
-        self.curr_error = 0
-        self.prev_error = 0
-        self.sum_error = 0
-        self.prev_error_deriv = 0
-        self.curr_error_deriv = 0
-        self.control = 0
-        self.dt = dt
-        
-    def update_control(self, current_error, reset_prev=False):
-        
-        self.prev_error = self.curr_error
-        self.curr_error = current_error
-        
-        #Calculating the integral error
-        self.sum_error = self.sum_error + self.curr_error*self.dt
-
-        #Calculating the derivative error
-        self.curr_error_deriv = (self.curr_error - self.prev_error) / self.dt
-
-        #Calculating the PID Control
-        self.control = self.Kp * self.curr_error + self.Ki * self.sum_error + self.Kd * self.curr_error_deriv
-
-
-    def get_control(self):
-        return self.control
-    
-class PID_dist:
-    def __init__(self, Kp, Ki, Kd, dt):
-        self.Kp = Kp
-        self.Kd = Kd
-        self.Ki = Ki
-        self.curr_error = 0
-        self.prev_error = 0
-        self.sum_error = 0
-        self.prev_error_deriv = 0
-        self.curr_error_deriv = 0
-        self.control = 0
-        self.dt = dt
-        
-    def update_control(self, current_error, reset_prev=False):
-        
-        self.prev_error = self.curr_error
-        self.curr_error = current_error
-        
-        #Calculating the integral error
-        self.sum_error = self.sum_error + self.curr_error*self.dt
-
-        #Calculating the derivative error
-        self.curr_error_deriv = (self.curr_error - self.prev_error) / self.dt
-
-        #Calculating the PID Control
-        self.control = self.Kp * self.curr_error + self.Ki * self.sum_error + self.Kd * self.curr_error_deriv
-
-
-    def get_control(self):
-        return self.control
-
 class VelocityGenerator(Node):
 
     def __init__(self):		
 		# Creates the node.
         super().__init__('velocity_generator')
-
-        self.angle_controller = PID_angle(1, 1, 1, 1)
-        self.dist_controller = PID_dist(1, 1, 1, 1)
 
         #Set up QoS Profiles for passing numbers over WiFi
         num_qos_profile = QoSProfile(
@@ -112,7 +47,8 @@ class VelocityGenerator(Node):
 				vel_qos_profile)
         self.velocity_publisher
 
-        self.target_distance = 0.4 # meters
+        self.target_distance = 0.35 # meters
+        self.target_angle = 0 # deg
 
         self.distance = None
         self.angle = None
@@ -120,59 +56,77 @@ class VelocityGenerator(Node):
         self.linear_x_vel = None
         self.angular_z_vel = None
 
+        self.pos_top_speed = 0.21 # m/s
+        self.neg_top_speed = -0.21
+        self.Kp_dist = 3
+        self.Kp_angle = 0.08
+
+        self.pos_top_angular_speed = 2.8 # rad/s
+        self.neg_top_angular_speed = -2.8
+
     def dist_and_angle_callback(self, msg):
         self.distance, self.angle = msg.data
         self.get_logger().info(f'received distance: {self.distance}, received angle: {self.angle}')
 
-    def get_turn_direction(self):
+    def get_turn_direction_and_angle_diff(self):
 
-        noise = 10
+        noise = 5
 
         if noise < self.angle < 180:
             self.direction = 1 # left
+            angle_diff = self.angle - noise
         
         elif noise < self.angle < (360 - noise):
             self.direction = -1 # right
+            angle_diff = (360 - noise) - self.angle
 
         else:
             self.direction = 0
+            angle_diff = 0
 
-    # def get_angle_error(self):
-
-    #     noise = 2 # deg
-
-    #     if (self.angle < noise) or (self.angle > (360-noise)):
-    #         angle_error = 0
-
-    #     elif self.angle < 180:
-    #         angle_error = self.angle - noise
-
-    #     else:
-    #         angle_error  = self.angle - 360 + noise
-
-    #     return angle_error
+        return angle_diff
 
     def get_angular_velocity(self):
 
-        ### should call PID here?
+        ### P controller
         
-        self.get_turn_direction()
-        speed = 1
+        angle_diff = self.get_turn_direction_and_angle_diff()
+
+        speed = round(self.Kp_angle * angle_diff, 1)
+
+        if speed > 0:
+            speed = min(self.pos_top_angular_speed, speed)
+        
+        else:
+            speed = max(self.neg_top_angular_speed, speed)
+
         self.angular_z_vel = float(self.direction * speed)
+        self.get_logger().info(f'angular velocity: {self.angular_z_vel}')	
 
     def get_linear_velocity(self):
 
-        ### should call PID here?
+        ### P controller
 
         noise = 0.01
 
-        diff = self.target_distance - self.distance
+        diff = self.distance - self.target_distance # positive if too close, negaitve if too far
 
-        if diff > noise:
-            self.linear_x_vel = -0.1
+        speed = round(self.Kp_dist * diff, 2)
 
-        elif diff < -noise:
-            self.linear_x_vel = 0.1
+        if speed > 0:
+            speed = min(self.pos_top_speed, speed)
+        
+        else:
+            speed = max(self.neg_top_speed, speed)
+
+        if diff > noise or diff < -noise:
+            self.linear_x_vel = speed
+        
+        # if diff > noise:
+        #     self.linear_x_vel = speed
+
+        # elif diff < -noise:
+        #     self.linear_x_vel = speed
 
         else:
             self.linear_x_vel = 0.0
@@ -204,6 +158,10 @@ def main():
             velocity_generator.publish_spin_velocity()
 
         except KeyboardInterrupt:
+            vel = Twist()
+            vel.linear.x = 0
+            vel.angular.z = 0
+            velocity_generator.velocity_publisher.publish(vel)
             break
 
 	#Clean up and shutdown.
