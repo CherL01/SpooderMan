@@ -11,6 +11,7 @@ from std_msgs.msg import Float32, Float32MultiArray
 # etc
 import numpy as np
 import math
+import time
 
 class GoToGoal(Node):
 
@@ -32,11 +33,18 @@ class GoToGoal(Node):
         self.linear_x_vel = 0.0
         self.angular_z_vel = 0.0
 
-        self.state = 4
+        self.state = 1
         self.waypoint1_coords = (1.5, 0.0)
         self.waypoint2_coords = (1.5, 1.4)
         self.waypoint3_coords = (0.0, 1.4)
+        self.goals = [self.waypoint1_coords, self.waypoint2_coords, self.waypoint3_coords]
         self.positon_tolerance = 0.1
+        self.goal_num = 0
+        self.goal_coords = self.goals[self.goal_num]
+        self.goals_reached = []
+
+        self.linear_x_vel = 0.0
+        self.angular_z_vel = 0.0
 		
         #Set up QoS Profiles for passing numbers over WiFi
         num_qos_profile = QoSProfile(
@@ -65,6 +73,24 @@ class GoToGoal(Node):
         self.globalPos, self.globalAng, self.globalAng_deg = msg.data
         self.get_logger().info('received global pose is x:{}, y:{}, a:{}'.format(self.globalPos.x,self.globalPos.y,self.globalAng))
 
+    def check_state_reached(self):
+
+        diff = math.dist(self.goal_coords, (self.globalPos.x, self.globalPos.y))
+
+        if diff < self.positon_tolerance:
+            return True
+
+        return False
+
+    def check_navigation_complete(self):
+
+        all_goals = set(self.goals_reached)
+        
+        if 3 in all_goals:
+            return True
+        
+        return False
+
     def get_state(self):
         
         # take in obstacle detection data
@@ -78,48 +104,73 @@ class GoToGoal(Node):
         # state 3: navigate to waypoint 3
         # state 4: stop
 
-        self.state = 1
+        # self.state = 1
 
         if self.state == 0:
             self.avoid_obstacle()
 
+        if self.check_state_reached():
+            self.goals_reached.append(self.state)
+            self.state = 4
+
         elif self.state == 1:
-            self.navigate_to_waypoint(1)
+            self.goal_coords = self.waypoint1_coords
+            self.navigate_to_waypoint()
 
         elif self.state == 2:
-            self.navigate_to_waypoint(2)
+            self.goal_coords = self.waypoint2_coords
+            self.navigate_to_waypoint()
 
         elif self.state == 3:
-            self.navigate_to_waypoint(3)
+            self.goal_coords = self.waypoint3_coords
+            self.navigate_to_waypoint()
 
         elif self.state == 4:
+
+            if self.check_navigation_complete():
+                return True
+
             self.stop()
+
+            self.goal_num += 1
+            self.goal_coords = self.goal_coords[self.goal_num]
+            self.state = self.goal_num + 1
+
+        return False
     
     def avoid_obstacle(self):
         pass
 
     def stop(self):
-        vel = Twist()
-        vel.linear.x = 0.0
-        vel.angular.z = 0.0
-        self.velocity_publisher.publish(vel)
+        self.linear_x_vel = 0.0
+        self.angular_z_vel = 0.0
+        self.publish_velocity()
         self.get_logger().info('stopping')
+        time.sleep(10)
 
     def get_turn_direction_and_angle_diff(self):
 
         noise = 5
 
-        if noise < self.globalAng_deg < 180:
+        dx = self.goal_coords[0] - self.globalPos.x
+        dy = self.goal_coords[1] - self.globalPos.y
+
+        angle_between_curr_and_goal = math.degrees(math.atan2(dy, dx))
+        self.get_logger().info(f'angle between curr and goal: {angle_between_curr_and_goal}')
+
+        if noise < angle_between_curr_and_goal < 180:
             self.direction = 1 # left
-            angle_diff = self.globalAng_deg - noise
+            angle_diff = angle_between_curr_and_goal - noise
         
-        elif noise < self.globalAng_deg < (360 - noise):
+        elif noise < angle_between_curr_and_goal < (360 - noise):
             self.direction = -1 # right
-            angle_diff = (360 - noise) - self.globalAng_deg
+            angle_diff = (360 - noise) - angle_between_curr_and_goal
 
         else:
             self.direction = 0
             angle_diff = 0
+
+        self.get_logger().info(f'angle diff: {angle_diff}')
 
         return angle_diff
 
@@ -144,9 +195,10 @@ class GoToGoal(Node):
 
         ### P controller
 
-        noise = 0.01
+        noise = 0.05
 
-        diff = self.distance - self.target_distance # positive if too close, negaitve if too far
+        diff = math.dist(self.goal_coords, (self.globalPos.x, self.globalPos.y)) # positive if too close, negaitve if too far
+        self.get_logger().info(f'distance to goal: {diff}')
 
         speed = round(self.Kp_dist * diff, 2)
 
@@ -165,54 +217,46 @@ class GoToGoal(Node):
         self.linear_x_vel = float(self.linear_x_vel)
         self.get_logger().info(f'linear velocity: {self.linear_x_vel}')
 
-    def navigate_to_waypoint(self, waypoint):
-
-        if waypoint == 1:
-            x, y = self.waypoint1_coords
-
-        elif waypoint == 2:
-            x, y = self.waypoint2_coords
-
-        else: 
-            x, y = self.waypoint3_coords
+    def navigate_to_waypoint(self):
 
         self.get_angular_velocity()
         self.get_linear_velocity()
-        
-
+        self.publish_velocity()
 
     def get_spin_velocity(self):
         self.get_spin_direction()
         speed = 1
         self.vel = float(self.direction * speed)
 
-    def publish_spin_velocity(self):
-        if self.x_coord != None:
-            self.get_spin_velocity()
-            vel = Twist()
-            vel.angular.z = self.vel
-            self.velocity_publisher.publish(vel)
-            self.get_logger().info('angular velocity: "%s"' % vel.angular.z)	
+    def publish_velocity(self):
+        vel = Twist()
+        vel.linear.x = self.linear_x_vel
+        vel.angular.z = self.angular_z_vel
+        self.velocity_publisher.publish(vel)
+        self.get_logger().info('velocity: "%s"' % vel)	
 
     def get_user_input(self):
         return self._user_input
 
 def main():
     rclpy.init() #init routine needed for ROS2.
-    velocity_generator = VelocityGenerator() #Create class object to be used.
+    go_to_goal = GoToGoal() #Create class object to be used.
     
     while rclpy.ok():
 
         try:
-            rclpy.spin_once(velocity_generator) # Trigger callback processing.
-            velocity_generator.publish_spin_velocity()
+            rclpy.spin_once(go_to_goal) # Trigger callback processing.
+            navigation_complete = go_to_goal.get_state()
+
+            if navigation_complete is True:
+                break
 
         except KeyboardInterrupt:
             break
 
 	#Clean up and shutdown.
 
-    velocity_generator.destroy_node()  
+    go_to_goal.destroy_node()  
     rclpy.shutdown()
 
 
