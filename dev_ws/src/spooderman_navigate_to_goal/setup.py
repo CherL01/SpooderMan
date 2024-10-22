@@ -1,4 +1,6 @@
 from setuptools import find_packages, setup
+import os  
+from glob import glob
 
 package_name = 'spooderman_navigate_to_goal'
 
@@ -10,16 +12,18 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name), glob('launch/*launch.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='michaelangelo',
-    maintainer_email='cherrylian01@gmail.com',
-    description='TODO: Package description',
+    maintainer='Cherry Lian',
+    maintainer_email='cherry.lian@gatech.edu',
+    description='Goal navigation turtlebot3',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'get_global_position = spooderman_navigate_to_goal.get_global_position:main',
         ],
     },
 )
