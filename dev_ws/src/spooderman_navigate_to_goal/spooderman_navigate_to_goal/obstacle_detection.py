@@ -36,6 +36,7 @@ class ObstacleDetection(Node):
             num_qos_profile)
         
         self.x_coords = None
+        self.y_coords = None
         self.angles = None
 
         self.ranges = None
@@ -69,7 +70,7 @@ class ObstacleDetection(Node):
             if (dist < self.range_min) or (dist > self.range_max) or (math.isnan(dist)):
                 dist = math.inf
   
-        # self.get_logger().info(f'received ranges (after preprocessing): {self.ranges}')
+        self.get_logger().info(f'received ranges (after preprocessing): {self.ranges}')
 
         self.angle_min = msg.angle_min
         self.angle_max = msg.angle_max
@@ -133,12 +134,12 @@ class ObstacleDetection(Node):
 
             msg = Float32MultiArray()
             msg.data = [self.distance, self.angle]
-            self.dist_and_angle_publisher.publish(msg)
+            self.obstacle_range_robot_pose_publisher(msg)
             self.get_logger().info(f'distance (m): {self.distance}, angle (deg): {self.angle}')
 
 def main(args=None):
     rclpy.init(args=args)
-    object_dist = GetObjectRange()
+    object_dist = ObstacleDetection()
 
     while rclpy.ok():
 
