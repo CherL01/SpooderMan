@@ -34,6 +34,7 @@ class GoToGoal(Node):
         self.angular_z_vel = 0.0
 
         self.state = 1
+        self.previous_state = None
         self.waypoint1_coords = (1.5, 0.0)
         self.waypoint2_coords = (1.5, 1.4)
         self.waypoint3_coords = (0.0, 1.4)
@@ -47,6 +48,14 @@ class GoToGoal(Node):
 
         self.linear_x_vel = 0.0
         self.angular_z_vel = 0.0
+
+        self.obstacle_dected, self.min_range_angle, self.min_range = 0.0, 0.0, 0.0
+        self.obstacle_angular_z_vel = 0.5
+        self.obstacle_linear_x_vel = 0.05
+        self.wall_following = True
+        self.wall_following_start_location = None
+        self.box_thickness = 0.7
+        self.coordinate_noise = 0.05
 		
         #Set up QoS Profiles for passing numbers over WiFi
         num_qos_profile = QoSProfile(
@@ -56,12 +65,19 @@ class GoToGoal(Node):
 		    depth=1
 		)
 
-        self.global_position_subscriber = self.create_subscription(
+        # self.global_position_subscriber = self.create_subscription(
+		# 		Float32MultiArray,
+		# 		'/robot_position/global_pose',
+        #         self.global_position_callback,
+		# 		num_qos_profile)
+        # self.global_position_subscriber # Prevents unused variable warning.
+
+        self.obstacle_range_robot_pose_subscriber = self.create_subscription(
 				Float32MultiArray,
-				'/robot_position/global_pose',
-                self.global_position_callback,
+				'/obstacle_robot_info/obstacle_dist_robot_pose',
+                self.obstacle_range_robot_pose_callback,
 				num_qos_profile)
-        self.global_position_subscriber # Prevents unused variable warning.
+        self.obstacle_range_robot_pose_subscriber # Prevents unused variable warning.
 
         # create velocity publisher
         self.velocity_publisher = self.create_publisher(
@@ -70,10 +86,16 @@ class GoToGoal(Node):
 				num_qos_profile)
         self.velocity_publisher
 
-    def global_position_callback(self, msg):
+    # def global_position_callback(self, msg):
+    #     # self.get_logger().info('receiving robot pose')
+    #     self.globalPos.x, self.globalPos.y, self.globalAng, self.globalAng_deg = msg.data
+    #     # self.get_logger().info('received global pose is x:{}, y:{}, a:{}, a_deg'.format(self.globalPos.x,self.globalPos.y,self.globalAng, self.globalAng_deg))
+
+    def obstacle_range_robot_pose_callback(self, msg):
         # self.get_logger().info('receiving robot pose')
-        self.globalPos.x, self.globalPos.y, self.globalAng, self.globalAng_deg = msg.data
-        # self.get_logger().info('received global pose is x:{}, y:{}, a:{}, a_deg'.format(self.globalPos.x,self.globalPos.y,self.globalAng, self.globalAng_deg))
+        if len(msg.data) == 7:
+            self.globalPos.x, self.globalPos.y, self.globalAng, self.globalAng_deg, self.obstacle_dected, self.min_range_angle, self.min_range = msg.data
+            self.get_logger().info('received global pose and obstacle info (x, y, ang_rad, ang_deg, obstacle_detected, min_range_angle, min_range): "%s"' % msg.data)
 
     def check_state_reached(self):
 
@@ -110,7 +132,24 @@ class GoToGoal(Node):
         # state 3: navigate to waypoint 3
         # state 4: stop
 
-        # self.state = 1
+        # check if obstacle is detected
+        if self.obstacle_dected == 1.0: # obstacle detected is true
+
+            self.check_wall_following()
+            self.get_logger().info(f'wall following: {self.wall_following}')
+
+            if self.wall_following is True:
+
+                if self.previous_state is None:
+                    self.previous_state = self.state
+
+                self.state = 0
+
+            elif self.previous_state is not None:
+                self.state = self.previous_state
+
+        elif self.previous_state is not None:
+            self.state = self.previous_state
 
         if self.state == 0:
             self.avoid_obstacle()
@@ -131,13 +170,18 @@ class GoToGoal(Node):
             self.goal_coords = self.waypoint3_coords
             self.navigate_to_waypoint()
 
-        elif self.state == 4:
+        if self.state == 4:
 
-            if self.check_navigation_complete():
-                self.stop()
-                return True
+            self.previous_state = None
+            self.wall_following = True
 
             self.stop()
+
+            if self.check_navigation_complete():
+                # self.stop()
+                return True
+
+            # self.stop()
 
             self.goal_num += 1
             self.goal_coords = self.goals[self.goal_num]
@@ -152,7 +196,75 @@ class GoToGoal(Node):
         return False
     
     def avoid_obstacle(self):
-        pass
+
+        # wall following?
+
+        noise = 3
+
+        # if self.min_range_angle < noise or self.min_range_angle > (360-noise):
+        #     self.min_range_angle = noise
+
+        # if noise < self.min_range_angle < 180: # obstacle closer to left side of robot, want to turn right
+        #     goal_angle = 90
+        #     direction = 1
+
+        # else: # obstacle closer to the right side of robot, want to turn left
+        #     goal_angle = 270
+        #     direction = -1
+
+        goal_angle = 90
+
+        if 100 > self.min_range_angle > 90:
+            goal_angle = self.min_range_angle - 2
+
+        angle_diff = goal_angle - self.min_range_angle
+
+        self.get_logger().info(f'goal angle, angle diff while wall following: {goal_angle}, {angle_diff}')
+
+        if abs(angle_diff) < noise:
+            angle_diff = 0
+
+        if angle_diff >= 0: 
+            direction = -1
+
+        elif angle_diff < 0:
+            direction = 1
+
+        self.get_logger().info(f'angle diff while wall following (after noise reduction): {angle_diff}')
+
+        speed = round(self.Kp_angle * abs(angle_diff), 1)
+
+        if speed > 0:
+            speed = min(self.obstacle_angular_z_vel, speed)
+        
+        else:
+            speed = max(-self.obstacle_angular_z_vel, speed)
+
+        self.angular_z_vel = float(direction * speed)
+        self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
+
+        self.linear_x_vel = self.obstacle_linear_x_vel
+
+        self.publish_velocity()
+
+    def check_wall_following(self):
+
+        if self.wall_following is True:
+
+            if self.wall_following_start_location is None:
+                self.wall_following_start_location = (self.globalPos.x, self.globalPos.y)
+
+            else:
+
+                dx = abs(self.globalPos.x - self.wall_following_start_location[0])
+                dy = abs(self.globalPos.y - self.wall_following_start_location[1])
+
+                diff = math.dist((self.globalPos.x, self.globalPos.y), (self.wall_following_start_location))
+
+                if (dx > self.box_thickness and dy < self.coordinate_noise) or (dx < self.coordinate_noise and dy > self.box_thickness) or (diff > self.box_thickness):
+                    self.wall_following = False
+                    self.wall_following_start_location = None
+
 
     def stop(self):
         self.linear_x_vel = 0.0

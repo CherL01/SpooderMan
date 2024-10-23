@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'get_global_position = spooderman_navigate_to_goal.get_global_position:main',
+            'obstacle_detection = spooderman_navigate_to_goal.obstacle_detection:main',
             'go_to_goal = spooderman_navigate_to_goal.go_to_goal:main',
         ],
     },
