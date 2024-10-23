@@ -39,7 +39,7 @@ class GoToGoal(Node):
         self.waypoint2_coords = (1.5, 1.4)
         self.waypoint3_coords = (0.0, 1.4)
         self.goals = [self.waypoint1_coords, self.waypoint2_coords, self.waypoint3_coords]
-        self.position_tolerance = 0.1
+        self.position_tolerance = 0.08
         self.goal_num = 0
         self.goal_coords = self.goals[self.goal_num]
         self.goals_reached = []
