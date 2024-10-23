@@ -41,11 +41,11 @@ class GetGlobalPosition(Node):
         self.odom_sub  # prevent unused variable warning
 
         # create center coordinate publisher
-        self.coordinate_publisher = self.create_publisher(
+        self.position_publisher = self.create_publisher(
 				Float32MultiArray, 
 				'/robot_position/global_pose',
 				num_qos_profile)
-        self.coordinate_publisher
+        self.position_publisher
 
     def odom_callback(self, data):
         self.update_Odometry(data)
@@ -75,12 +75,13 @@ class GetGlobalPosition(Node):
         self.globalAng = orientation - self.Init_ang
         self.globalAng_deg = self.globalAng * 180 / math.pi
     
-        self.get_logger().info('Transformed global pose is x:{}, y:{}, a:{}'.format(self.globalPos.x,self.globalPos.y,self.globalAng))
+        # self.get_logger().info('Transformed global pose is x:{}, y:{}, a:{}'.format(self.globalPos.x,self.globalPos.y,self.globalAng))
 
     def publish_global_position(self):
         msg = Float32MultiArray()
-        pose = [self.globalPos.x, self.globalPos.y, self.globalAng, self.globalAng_deg]
+        pose = [float(self.globalPos.x), float(self.globalPos.y), self.globalAng, self.globalAng_deg]
         msg.data = pose
+        self.position_publisher.publish(msg)
 
         self.get_logger().info('global pose (x, y, ang_rad, ang_deg): "%s"' % msg.data)
 
