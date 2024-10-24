@@ -273,7 +273,7 @@ class GoToGoal(Node):
             self.linear_x_vel = speed
 
         else:
-            self.linear_x_vel = 0.0
+            self.linear_x_vel = self.obstacle_linear_x_vel
 
         self.linear_x_vel = float(self.linear_x_vel)
         self.get_logger().info(f'linear velocity: {self.linear_x_vel}')
