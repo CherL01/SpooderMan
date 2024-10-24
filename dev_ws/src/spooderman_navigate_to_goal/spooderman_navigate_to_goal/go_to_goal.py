@@ -212,8 +212,6 @@ class GoToGoal(Node):
 
         # wall following?
 
-        noise = 3
-
         # if self.min_range_angle < noise or self.min_range_angle > (360-noise):
         #     self.min_range_angle = noise
 
@@ -225,38 +223,42 @@ class GoToGoal(Node):
         #     goal_angle = 270
         #     direction = -1
 
-        goal_angle = 90
+        linear_noise = 0.02
 
-        if 100 > self.min_range_angle > 90:
-            goal_angle = self.min_range_angle - 2
+        if self.min_range >= (self.wall_following_distance - linear_noise) or (self.min_range_angle < 15) or (self.min_range_angle > 345):
 
-        angle_diff = goal_angle - self.min_range_angle
+            angular_noise = 3
 
-        self.get_logger().info(f'goal angle, angle diff while wall following: {goal_angle}, {angle_diff}')
+            goal_angle = 90
 
-        if abs(angle_diff) < noise:
-            angle_diff = 0
+            if 100 > self.min_range_angle > 90:
+                goal_angle = self.min_range_angle - 2
 
-        if angle_diff >= 0: 
-            direction = -1
+            angle_diff = goal_angle - self.min_range_angle
 
-        elif angle_diff < 0:
-            direction = 1
+            self.get_logger().info(f'goal angle, angle diff while wall following: {goal_angle}, {angle_diff}')
 
-        self.get_logger().info(f'angle diff while wall following (after noise reduction): {angle_diff}')
+            if abs(angle_diff) < angular_noise:
+                angle_diff = 0
 
-        speed = round(self.Kp_angle * abs(angle_diff), 1)
+            if angle_diff >= 0: 
+                direction = -1
 
-        if speed > 0:
-            speed = min(self.obstacle_angular_z_vel, speed)
-        
-        else:
-            speed = max(-self.obstacle_angular_z_vel, speed)
+            elif angle_diff < 0:
+                direction = 1
 
-        self.angular_z_vel = float(direction * speed)
-        self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
+            self.get_logger().info(f'angle diff while wall following (after noise reduction): {angle_diff}')
 
-        noise = 0.02
+            speed = round(self.Kp_angle * abs(angle_diff), 1)
+
+            if speed > 0:
+                speed = min(self.obstacle_angular_z_vel, speed)
+            
+            else:
+                speed = max(-self.obstacle_angular_z_vel, speed)
+
+            self.angular_z_vel = float(direction * speed)
+            self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
 
         diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
         self.get_logger().info(f'distance to wall: {diff}')
@@ -269,7 +271,7 @@ class GoToGoal(Node):
         else:
             speed = max(-self.obstacle_linear_x_vel, speed)
 
-        if diff > noise or diff < -noise:
+        if diff > linear_noise or diff < -linear_noise:
             self.linear_x_vel = speed
 
         else:
