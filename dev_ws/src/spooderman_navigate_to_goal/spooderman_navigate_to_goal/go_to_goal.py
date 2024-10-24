@@ -256,9 +256,9 @@ class GoToGoal(Node):
         self.angular_z_vel = float(direction * speed)
         self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
 
-        noise = 0.05
+        noise = 0.02
 
-        diff = - self.wall_following_distance + self.min_range # positive if too close, negaitve if too far
+        diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
         self.get_logger().info(f'distance to wall: {diff}')
 
         speed = round(self.Kp_dist * diff, 2)
