@@ -224,15 +224,14 @@ class GoToGoal(Node):
         #     direction = -1
 
         linear_noise = 0.02
+        angular_noise = 3
 
-        if self.min_range >= (self.wall_following_distance - linear_noise) and (350 > self.min_range_angle > 10):
+        goal_angle = 90
 
-            angular_noise = 3
+        if 100 > self.min_range_angle > 90:
+            goal_angle = self.min_range_angle - angular_noise
 
-            goal_angle = 90
-
-            if 100 > self.min_range_angle > 90:
-                goal_angle = self.min_range_angle - 2
+        if self.min_range >= (self.wall_following_distance - linear_noise) or (350 > self.min_range_angle > 10):
 
             angle_diff = goal_angle - self.min_range_angle
 
@@ -260,29 +259,31 @@ class GoToGoal(Node):
             self.angular_z_vel = float(direction * speed)
             self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
 
-        diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
-        self.get_logger().info(f'distance to wall: {diff}')
+        if (self.min_range_angle < 10) or (self.min_range_angle > 350) or (abs(self.min_range_angle - goal_angle) < angular_noise):
 
-        speed = round(self.Kp_dist * diff, 2)
+            diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
+            self.get_logger().info(f'distance to wall: {diff}')
 
-        if speed > 0:
-            speed = min(self.obstacle_linear_x_vel, speed)
-        
-        else:
-            speed = max(-self.obstacle_linear_x_vel, speed)
+            speed = round(self.Kp_dist * diff, 2)
 
-        if diff > linear_noise or diff < -linear_noise:
-            self.linear_x_vel = speed
+            if speed > 0:
+                speed = min(self.obstacle_linear_x_vel, speed)
+            
+            else:
+                speed = max(-self.obstacle_linear_x_vel, speed)
 
-        else:
-            self.linear_x_vel = self.obstacle_linear_x_vel
+            if diff > linear_noise or diff < -linear_noise:
+                self.linear_x_vel = speed
 
-        self.linear_x_vel = float(self.linear_x_vel)
-        self.get_logger().info(f'linear velocity: {self.linear_x_vel}')
+            else:
+                self.linear_x_vel = self.obstacle_linear_x_vel
 
-        # self.linear_x_vel = self.obstacle_linear_x_vel
+            self.linear_x_vel = float(self.linear_x_vel)
+            self.get_logger().info(f'linear velocity: {self.linear_x_vel}')
 
-        self.publish_velocity()
+            # self.linear_x_vel = self.obstacle_linear_x_vel
+
+            self.publish_velocity()
 
     def check_wall_following(self):
 
