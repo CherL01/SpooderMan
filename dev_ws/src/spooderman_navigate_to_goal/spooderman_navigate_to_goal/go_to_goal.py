@@ -258,8 +258,8 @@ class GoToGoal(Node):
 
         noise = 0.05
 
-        diff = self.wall_following_distance - self.min_range # positive if too close, negaitve if too far
-        self.get_logger().info(f'distance to goal: {diff}')
+        diff = - self.wall_following_distance + self.min_range # positive if too close, negaitve if too far
+        self.get_logger().info(f'distance to wall: {diff}')
 
         speed = round(self.Kp_dist * diff, 2)
 
