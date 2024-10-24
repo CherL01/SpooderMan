@@ -57,6 +57,7 @@ class GoToGoal(Node):
         self.box_thickness = 0.7
         self.coordinate_noise = 0.05
         self.wall_following_distance = 0.2
+        self.emergency_backup_distance = 0.1
 		
         #Set up QoS Profiles for passing numbers over WiFi
         num_qos_profile = QoSProfile(
@@ -226,60 +227,67 @@ class GoToGoal(Node):
         linear_noise = 0.02
         angular_noise = 3
 
-        if self.min_range >= (self.wall_following_distance): # or (350 > self.min_range_angle > 10):
-
-            goal_angle = 90
-
-            if 100 > self.min_range_angle > 90:
-                goal_angle = self.min_range_angle - angular_noise
-
-            angle_diff = goal_angle - self.min_range_angle
-
-            self.get_logger().info(f'goal angle, angle diff while wall following: {goal_angle}, {angle_diff}')
-
-            if abs(angle_diff) < angular_noise:
-                angle_diff = 0
-
-            if angle_diff >= 0: 
-                direction = -1
-
-            elif angle_diff < 0:
-                direction = 1
-
-            self.get_logger().info(f'angle diff while wall following (after noise reduction): {angle_diff}')
-
-            speed = round(self.Kp_angle * abs(angle_diff), 1)
-
-            if speed > 0:
-                speed = min(self.obstacle_angular_z_vel, speed)
-            
-            else:
-                speed = max(-self.obstacle_angular_z_vel, speed)
-
-            self.angular_z_vel = float(direction * speed)
-            self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
-
         diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
         self.get_logger().info(f'distance to wall: {diff}')
 
-        speed = round(self.Kp_dist * diff, 2)
+        if abs(diff) <= self.emergency_backup_distance:
 
-        if speed > 0:
-            speed = min(self.obstacle_linear_x_vel, speed)
-        
-        else:
-            speed = max(-self.obstacle_linear_x_vel, speed)
-
-        if diff > linear_noise or diff < -linear_noise:
-            self.linear_x_vel = speed
+            self.linear_x_vel = -self.obstacle_linear_x_vel
 
         else:
-            self.linear_x_vel = self.obstacle_linear_x_vel
 
-        self.linear_x_vel = float(self.linear_x_vel)
-        self.get_logger().info(f'linear velocity: {self.linear_x_vel}')
+            if self.min_range >= (self.wall_following_distance - linear_noise) or (350 > self.min_range_angle > 10):
 
-        # self.linear_x_vel = self.obstacle_linear_x_vel
+                goal_angle = 90
+
+                if 100 > self.min_range_angle > 90:
+                    goal_angle = self.min_range_angle - angular_noise
+
+                angle_diff = goal_angle - self.min_range_angle
+
+                self.get_logger().info(f'goal angle, angle diff while wall following: {goal_angle}, {angle_diff}')
+
+                if abs(angle_diff) < angular_noise:
+                    angle_diff = 0
+
+                if angle_diff >= 0: 
+                    direction = -1
+
+                elif angle_diff < 0:
+                    direction = 1
+
+                self.get_logger().info(f'angle diff while wall following (after noise reduction): {angle_diff}')
+
+                speed = round(self.Kp_angle * abs(angle_diff), 1)
+
+                if speed > 0:
+                    speed = min(self.obstacle_angular_z_vel, speed)
+                
+                else:
+                    speed = max(-self.obstacle_angular_z_vel, speed)
+
+                self.angular_z_vel = float(direction * speed)
+                self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
+
+
+            speed = round(self.Kp_dist * diff, 2)
+
+            if speed > 0:
+                speed = min(self.obstacle_linear_x_vel, speed)
+            
+            else:
+                speed = max(-self.obstacle_linear_x_vel, speed)
+
+            if diff > linear_noise or diff < -linear_noise:
+                self.linear_x_vel = speed
+
+            else:
+                self.linear_x_vel = self.obstacle_linear_x_vel
+
+            self.linear_x_vel = float(self.linear_x_vel)
+            self.get_logger().info(f'linear velocity: {self.linear_x_vel}')
+
+            # self.linear_x_vel = self.obstacle_linear_x_vel
 
         self.publish_velocity()
 
