@@ -225,7 +225,7 @@ class GoToGoal(Node):
 
         linear_noise = 0.02
 
-        if self.min_range >= (self.wall_following_distance - linear_noise) or (350 > self.min_range_angle > 10):
+        if self.min_range >= (self.wall_following_distance - linear_noise) and (350 > self.min_range_angle > 10):
 
             angular_noise = 3
 
