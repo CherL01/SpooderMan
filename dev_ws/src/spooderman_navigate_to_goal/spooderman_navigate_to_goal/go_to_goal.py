@@ -56,6 +56,7 @@ class GoToGoal(Node):
         self.wall_following_start_location = None
         self.box_thickness = 0.7
         self.coordinate_noise = 0.05
+        self.wall_following_distance = 0.2
 		
         #Set up QoS Profiles for passing numbers over WiFi
         num_qos_profile = QoSProfile(
@@ -159,14 +160,26 @@ class GoToGoal(Node):
             self.state = 4
 
         elif self.state == 1:
+
+            self.previous_state = None
+            self.wall_following = True
+
             self.goal_coords = self.waypoint1_coords
             self.navigate_to_waypoint()
 
         elif self.state == 2:
+
+            self.previous_state = None
+            self.wall_following = True
+
             self.goal_coords = self.waypoint2_coords
             self.navigate_to_waypoint()
 
         elif self.state == 3:
+
+            self.previous_state = None
+            self.wall_following = True
+
             self.goal_coords = self.waypoint3_coords
             self.navigate_to_waypoint()
 
@@ -243,7 +256,29 @@ class GoToGoal(Node):
         self.angular_z_vel = float(direction * speed)
         self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
 
-        self.linear_x_vel = self.obstacle_linear_x_vel
+        noise = 0.05
+
+        diff = self.wall_following_distance - self.min_range # positive if too close, negaitve if too far
+        self.get_logger().info(f'distance to goal: {diff}')
+
+        speed = round(self.Kp_dist * diff, 2)
+
+        if speed > 0:
+            speed = min(self.obstacle_linear_x_vel, speed)
+        
+        else:
+            speed = max(-self.obstacle_linear_x_vel, speed)
+
+        if diff > noise or diff < -noise:
+            self.linear_x_vel = speed
+
+        else:
+            self.linear_x_vel = 0.0
+
+        self.linear_x_vel = float(self.linear_x_vel)
+        self.get_logger().info(f'linear velocity: {self.linear_x_vel}')
+
+        # self.linear_x_vel = self.obstacle_linear_x_vel
 
         self.publish_velocity()
 
