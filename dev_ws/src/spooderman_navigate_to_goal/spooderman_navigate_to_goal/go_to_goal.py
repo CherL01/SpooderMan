@@ -231,6 +231,9 @@ class GoToGoal(Node):
         if 100 > self.min_range_angle > 90:
             goal_angle = self.min_range_angle - angular_noise
 
+        diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
+        self.get_logger().info(f'distance to wall: {diff}')
+
         if self.min_range >= (self.wall_following_distance - linear_noise) or (350 > self.min_range_angle > 10):
 
             angle_diff = goal_angle - self.min_range_angle
@@ -259,10 +262,7 @@ class GoToGoal(Node):
             self.angular_z_vel = float(direction * speed)
             self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
 
-        if (self.min_range_angle < 10) or (self.min_range_angle > 350) or (abs(self.min_range_angle - goal_angle) < angular_noise):
-
-            diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
-            self.get_logger().info(f'distance to wall: {diff}')
+        if (self.min_range_angle < 10) or (self.min_range_angle > 350) or (abs(self.min_range_angle - goal_angle) < angular_noise) or (abs(diff) < linear_noise):
 
             speed = round(self.Kp_dist * diff, 2)
 
