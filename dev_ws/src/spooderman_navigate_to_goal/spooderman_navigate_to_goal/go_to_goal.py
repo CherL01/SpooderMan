@@ -227,10 +227,7 @@ class GoToGoal(Node):
         linear_noise = 0.02
         angular_noise = 3
 
-        diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
-        self.get_logger().info(f'distance to wall: {diff}')
-
-        if abs(diff) <= self.emergency_backup_distance:
+        if self.min_range <= self.emergency_backup_distance:
 
             self.linear_x_vel = -self.obstacle_linear_x_vel
 
@@ -269,6 +266,8 @@ class GoToGoal(Node):
                 self.angular_z_vel = float(direction * speed)
                 self.get_logger().info(f'angular velocity: {self.angular_z_vel}')
 
+            diff = - self.wall_following_distance + self.min_range # positive if too far, negaitve if too close
+            self.get_logger().info(f'distance to wall: {diff}')
 
             speed = round(self.Kp_dist * diff, 2)
 
