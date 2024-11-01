@@ -9,7 +9,7 @@ import numpy as np
 from std_msgs.msg import Int64, Float32, Float32MultiArray
 from geometry_msgs.msg import PointStamped
 
-### https://github.com/IvayloAsenov/Wall-Follower-Robot-ROS/blob/master/wall_follower.py
+### https://docs.nav2.org/configuration/packages/configuring-regulated-pp.html
 
 class PointPublisher(Node):
 
