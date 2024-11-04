@@ -1,3 +1,6 @@
+# Yi Lian
+# Evan Rosenthal
+
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSReliabilityPolicy, QoSHistoryPolicy
@@ -7,15 +10,24 @@ import sys
 import numpy as np
 
 from std_msgs.msg import Int64, Float32, Float32MultiArray
-from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import PointStamped, PoseStamped, Point, PoseWithCovarianceStamped
+from nav2_msgs.action._navigate_to_pose import NavigateToPose_FeedbackMessage
 
 ### https://docs.nav2.org/configuration/packages/configuring-regulated-pp.html
 
-class PointPublisher(Node):
+class PositionGenerator(Node):
 
     def __init__(self):		
 		# Creates the node.
-        super().__init__('point_publisher')
+        super().__init__('position_generator')
+
+        self.map_name = 'map'
+
+        self.point_queue = []
+
+        self.mapPosition = Point()
+
+        self.point_number = 0
 
         #Set up QoS Profiles for passing numbers over WiFi
         num_qos_profile = QoSProfile(
@@ -25,139 +37,116 @@ class PointPublisher(Node):
 		    depth=1
 		)
 
-        self.clicked_point_subscriber = self.create_subscription(
-				PointStamped,
-				'/clicked_point',
-                self.clicked_point_callback,
+        #Set up QoS Profiles for passing pose info over WiFi
+        pos_qos_profile = QoSProfile(
+		    reliability=QoSReliabilityPolicy.RELIABLE,
+		    durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
+		    depth=1
+		)
+
+        self.map_position_subscriber = self.create_subscription(
+				PoseWithCovarianceStamped,
+				'/amcl_pose',
+                self.map_position_callback,
+				pos_qos_profile)
+        self.map_position_subscriber # Prevents unused variable warning.
+
+        if len(self.point_queue) < 3:
+
+            self.clicked_point_subscriber = self.create_subscription(
+                    PointStamped,
+                    '/clicked_point',
+                    self.clicked_point_callback,
+                    num_qos_profile)
+            self.clicked_point_subscriber # Prevents unused variable warning.
+
+        self.position_publisher = self.create_publisher(
+				PoseStamped, 
+				'/goal_pose',
 				num_qos_profile)
-        self.clicked_point_subscriber # Prevents unused variable warning.
+        self.position_publisher
 
-        self.velocity_publisher = self.create_publisher(
-				Twist, 
-				'/cmd_vel',
-				vel_qos_profile)
-        self.velocity_publisher
+    def clicked_point_callback(self, msg):
+        x, y, z = msg.point.x, msg.point.y, msg.point.z
+        self.get_logger().info(f'received point: {x}, {y}, {z}')
 
-        self.target_distance = 0.35 # meters
-        self.target_angle = 0 # deg
+        self.point_queue.append((x, y, z))
+        self.get_logger().info(f'point queue: {self.point_queue}')
 
-        self.distance = None
-        self.angle = None
+    def map_position_callback(self, msg):
+        self.get_logger().info('receiving robot pose')
+        self.mapPosition.x, self.mapPosition.y = msg.pose.pose.position.x, msg.pose.pose.position.y
+        self.get_logger().info('received map pose is x:{}, y:{}'.format(self.mapPosition.x, self.mapPosition.y))
 
-        self.linear_x_vel = None
-        self.angular_z_vel = None
+    def send_goal(self):
 
-        self.pos_top_speed = 0.21 # m/s
-        self.neg_top_speed = -0.21
-        self.Kp_dist = 3
-        self.Kp_angle = 0.08
+        if len(self.point_queue) >= 3:
 
-        self.pos_top_angular_speed = 2.8 # rad/s
-        self.neg_top_angular_speed = -2.8
+            x, y, z = self.point_queue[self.point_number]
 
-    def dist_and_angle_callback(self, msg):
-        self.distance, self.angle = msg.data
-        self.get_logger().info(f'received distance: {self.distance}, received angle: {self.angle}')
+            if self.check_goal_reached(x, y):
 
-    def get_turn_direction_and_angle_diff(self):
+                self.point_number += 1
 
-        noise = 5
+                new_x, new_y, new_z = self.point_queue[self.point_number]
+                self.publish_position(new_x, new_y, new_z)
+            
+            else:
+                self.publish_position(x, y, z)
 
-        if noise < self.angle < 180:
-            self.direction = 1 # left
-            angle_diff = self.angle - noise
+    def check_goal_reached(self, x, y):
+
+        goal_dist_tolerance = 0.1
         
-        elif noise < self.angle < (360 - noise):
-            self.direction = -1 # right
-            angle_diff = (360 - noise) - self.angle
+        if (abs(self.mapPosition.x - x) < goal_dist_tolerance) and (abs(self.mapPosition.y - y) < goal_dist_tolerance):
 
-        else:
-            self.direction = 0
-            angle_diff = 0
+            self.get_logger().info(f'goal reached: {self.mapPosition.x}, {self.mapPosition.y}')
 
-        return angle_diff
+            return True
 
-    def get_angular_velocity(self):
+        self.get_logger().info(f'goal not reached: {self.mapPosition.x}, {self.mapPosition.y}')
 
-        ### P controller
-        
-        angle_diff = self.get_turn_direction_and_angle_diff()
+        return False
 
-        speed = round(self.Kp_angle * angle_diff, 1)
+    def publish_position(self, x, y, z):
 
-        if speed > 0:
-            speed = min(self.pos_top_angular_speed, speed)
-        
-        else:
-            speed = max(self.neg_top_angular_speed, speed)
+        pose = PoseStamped()
 
-        self.angular_z_vel = float(self.direction * speed)
-        self.get_logger().info(f'angular velocity: {self.angular_z_vel}')	
+        pose.header.frame_id = self.map_name
+        pose.header.stamp = self.get_clock().now().to_msg()
 
-    def get_linear_velocity(self):
+        pose.pose.position.x = x
+        pose.pose.position.y = y
+        pose.pose.position.z = 0.0
+        pose.pose.orientation.x = 0.0
+        pose.pose.orientation.y = 0.0
+        pose.pose.orientation.z = 0.0
+        pose.pose.orientation.w = 1.0
 
-        ### P controller
+        self.get_logger().info(f'publishing goal: {pose.pose.position.x}, {pose.pose.position.y}, {pose.pose.position.z}')
 
-        noise = 0.01
-
-        diff = self.distance - self.target_distance # positive if too close, negaitve if too far
-
-        speed = round(self.Kp_dist * diff, 2)
-
-        if speed > 0:
-            speed = min(self.pos_top_speed, speed)
-        
-        else:
-            speed = max(self.neg_top_speed, speed)
-
-        if diff > noise or diff < -noise:
-            self.linear_x_vel = speed
-        
-        # if diff > noise:
-        #     self.linear_x_vel = speed
-
-        # elif diff < -noise:
-        #     self.linear_x_vel = speed
-
-        else:
-            self.linear_x_vel = 0.0
-
-        self.linear_x_vel = float(self.linear_x_vel)
-        self.get_logger().info(f'linear velocity: {self.linear_x_vel}')	
-
-    def publish_spin_velocity(self):
-        if self.distance is not None:
-            self.get_angular_velocity()
-            self.get_linear_velocity()
-            vel = Twist()
-            vel.linear.x = self.linear_x_vel
-            vel.angular.z = self.angular_z_vel
-            self.velocity_publisher.publish(vel)
-            self.get_logger().info(f'velocity: {vel}')	
-
-    def get_user_input(self):
-        return self._user_input
+        self.position_publisher.publish(pose)
 
 def main():
-    rclpy.init() #init routine needed for ROS2.
-    velocity_generator = VelocityGenerator() #Create class object to be used.
+    rclpy.init() 
+    position_generator = PositionGenerator() 
     
     while rclpy.ok():
 
         try:
-            rclpy.spin_once(velocity_generator) # Trigger callback processing.
-            velocity_generator.publish_spin_velocity()
+
+            rclpy.spin_once(position_generator)
+            position_generator.send_goal()
+
+            if position_generator.point_number == 3:
+                print("All points reached. Shutting down.")
+                break
 
         except KeyboardInterrupt:
-            vel = Twist()
-            vel.linear.x = 0.0
-            vel.angular.z = 0.0
-            velocity_generator.velocity_publisher.publish(vel)
+            print("Keyboard Interrupt. Shutting down.")
             break
 
-	#Clean up and shutdown.
-
-    velocity_generator.destroy_node()  
+    position_generator.destroy_node()  
     rclpy.shutdown()
 
 

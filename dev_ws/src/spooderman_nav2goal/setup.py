@@ -1,4 +1,6 @@
 from setuptools import find_packages, setup
+import os  
+from glob import glob
 
 package_name = 'spooderman_nav2goal'
 
@@ -13,13 +15,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='michaelangelo',
+    maintainer='Cherry Lian',
     maintainer_email='cherrylian01@gmail.com',
-    description='TODO: Package description',
+    description='A package to navigate to a point in space',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'navigate_to_point = spooderman_nav2goal.navigate_to_point:main',
         ],
     },
 )
