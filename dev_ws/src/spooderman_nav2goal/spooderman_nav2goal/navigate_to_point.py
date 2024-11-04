@@ -88,8 +88,10 @@ class PositionGenerator(Node):
 
                 self.point_number += 1
 
-                new_x, new_y, new_z = self.point_queue[self.point_number]
-                self.publish_position(new_x, new_y, new_z)
+                if self.point_number < 3:
+
+                    new_x, new_y, new_z = self.point_queue[self.point_number]
+                    self.publish_position(new_x, new_y, new_z)
             
             else:
                 self.publish_position(x, y, z)
