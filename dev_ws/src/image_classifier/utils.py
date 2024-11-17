@@ -2,6 +2,7 @@
 import numpy as np
 import logging
 import matplotlib.pyplot as plt
+import cv2
 
 def calculate_accuracy(correct_predictions, total_samples):
     """
@@ -90,3 +91,44 @@ def update_confusion_matrix(confusion_matrix, true_label, predicted_label):
         logging.error(f"Unexpected error updating confusion matrix: {e}")
         raise
     return confusion_matrix
+
+def visualize_misclassified_images(image_paths, predictions, true_labels, class_names=None):
+    """
+    Visualizes one misclassified image for each true class.
+
+    Args:
+        image_paths (list): List of paths to the original images.
+        predictions (list or np.ndarray): Predicted labels for the images.
+        true_labels (list or np.ndarray): True labels for the images.
+        class_names (list, optional): List of class names corresponding to the labels. Defaults to None.
+    """
+    if len(image_paths) != len(predictions) or len(image_paths) != len(true_labels):
+        raise ValueError("The lengths of image_paths, predictions, and true_labels must match.")
+
+    # Dictionary to store the first misclassified image for each true class
+    misclassified = {}
+
+    for i, (img_path, pred, truth) in enumerate(zip(image_paths, predictions, true_labels)):
+        if pred != truth and truth not in misclassified:
+            misclassified[truth] = (img_path, pred)  # Store the path and predicted label
+
+    # Visualize misclassified images
+    for true_class, (img_path, pred_label) in misclassified.items():
+        # Load the image
+        img = cv2.imread(img_path)
+        if img is None:
+            logging.warning(f"Could not read the image at {img_path}. Skipping.")
+            continue
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        # Get class names if provided
+        path_text = img_path
+        pred_text = class_names[pred_label] if class_names else f"Pred: {pred_label}"
+        true_text = class_names[true_class] if class_names else f"Truth: {true_class}"
+
+        # Display the image with labels
+        plt.figure(figsize=(5, 5))
+        plt.imshow(img_rgb)
+        plt.title(f"{path_text}\n{pred_text}\n{true_text}", color="red")
+        plt.axis("off")
+        plt.show()

@@ -6,13 +6,14 @@ import time
 import math
 import numpy as np
 import random
+import os
 
 ### Load training images and labels
 
-imageDirectory = './2024F_imgs/'
+imageDirectory = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "2024F_imgs"))
 imageType = '.png'
 
-with open(imageDirectory + 'labels.txt', 'r') as f:
+with open(os.path.join(imageDirectory, 'labels.txt'), 'r') as f:
     reader = csv.reader(f)
     lines = list(reader)
 
@@ -22,7 +23,22 @@ train_lines = lines[:math.floor(len(lines)/2)][:]
 test_lines = lines[math.floor(len(lines)/2):][:]
 
 # this line reads in all images listed in the file in color, and resizes them to 25x33 pixels
-train = np.array([np.array(cv2.resize(cv2.imread(imageDirectory+train_lines[i][0]+imageType),(25,33))) for i in range(len(train_lines))])
+# print(os.path.join(imageDirectory, train_lines[0][0] + imageType))
+# img = cv2.imread(os.path.join(imageDirectory, train_lines[0][0] + imageType))
+# cv2.imshow('test', img)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+# img_resized = cv2.resize(img, (25, 33))
+# cv2.imshow('test', img_resized)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+# img_array = np.array(img_resized)
+# print(img_array.shape)
+
+train = np.array([np.array(cv2.resize(cv2.imread(os.path.join(imageDirectory, train_lines[i][0] + imageType)), (25,33))) for i in range(len(train_lines))])
+# print(train.shape)
 
 # here we reshape each image into a long vector and ensure the data type is a float (which is what KNN wants), note the *3 is due to 3 channels of color.
 train_data = train.flatten().reshape(len(train_lines), 33*25*3)
@@ -36,10 +52,10 @@ train_labels = np.array([np.int32(train_lines[i][1]) for i in range(len(train_li
 knn = cv2.ml.KNearest_create()
 knn.train(train_data, cv2.ml.ROW_SAMPLE, train_labels)
 
-if(__debug__):
-	Title_images = 'Original Image'
-	Title_resized = 'Image Resized'
-	cv2.namedWindow( Title_images, cv2.WINDOW_AUTOSIZE )
+# if(__debug__):
+# 	Title_images = 'Original Image'
+# 	Title_resized = 'Image Resized'
+# 	cv2.namedWindow( Title_images, cv2.WINDOW_AUTOSIZE )
 
 correct = 0.0
 confusion_matrix = np.zeros((6,6))
@@ -48,13 +64,13 @@ k = 7
 
 for i in range(len(test_lines)):
     original_img = cv2.imread(imageDirectory+test_lines[i][0]+imageType)
-    test_img = np.array(cv2.resize(cv2.imread(imageDirectory+test_lines[i][0]+imageType),(25,33)))
-    if(__debug__):
-        cv2.imshow(Title_images, original_img)
-        cv2.imshow(Title_resized, test_img)
-        key = cv2.waitKey()
-        if key==27:    # Esc key to stop
-            break
+    test_img = np.array(cv2.resize(cv2.imread(os.path.join(imageDirectory, test_lines[i][0] + imageType)),(25,33)))
+    # if(__debug__):
+    #     cv2.imshow(Title_images, original_img)
+    #     cv2.imshow(Title_resized, test_img)
+    #     key = cv2.waitKey()
+    #     if key==27:    # Esc key to stop
+    #         break
     test_img = test_img.flatten().reshape(1, 33*25*3)
     test_img = test_img.astype(np.float32)
 
