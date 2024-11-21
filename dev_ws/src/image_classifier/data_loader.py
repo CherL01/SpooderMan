@@ -31,10 +31,13 @@ def extract_sign_from_cardboard(image, resize_dim=(25, 33), delta_h=10, delta_s=
         delta_v (int): Range for value adjustment around the dominant color.
 
     Returns:
-        np.ndarray: Resized grayscale image of the directional sign or the original resized image if no sign is found.
+        tuple: Resized sign area, cropped original image, and resized image without preprocessing.
     """
     logging.debug("Detecting brown cardboard and directional sign...")
     try:
+        
+        resized_img_wout_preprocessing = cv2.resize(image, resize_dim)
+        
         # Convert image to HSV
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -239,13 +242,13 @@ def extract_sign_from_cardboard(image, resize_dim=(25, 33), delta_h=10, delta_s=
             plt.tight_layout()
             plt.show()
 
-        return resized_image, cropped_original
+        return resized_image, cropped_original, resized_img_wout_preprocessing
 
     except Exception as e:
         logging.error(f"Error while detecting cardboard and sign: {e}")
         raise
 
-def load_data(image_directory='./2024F_imgs', image_type='.png', image_size=(33, 33), grid_size=(8, 8), random_seed=42, split_ratio=0.8, k_fold=True):
+def load_data(train_image_directory='./2024F_imgs', test_image_directory='./test_data', image_type='.png', image_size=(33, 33), grid_size=(8, 8), random_seed=42, split_ratio=0.8, k_fold=True):
     """
     Loads and preprocesses image data, including spatial gradient, edge, and contour features.
 
@@ -258,33 +261,48 @@ def load_data(image_directory='./2024F_imgs', image_type='.png', image_size=(33,
     Returns:
         tuple: Four numpy arrays (train_data, train_labels, test_data, test_labels).
     """
-    logging.info(f"Loading data from directory: {image_directory}")
-    labels_file = os.path.join(image_directory, 'labels.txt')
+    logging.info(f"Loading data from directory: {train_image_directory}")
+    train_labels_file = os.path.join(train_image_directory, 'labels.txt')
+    
+    logging.info(f"Loading data from directory: {test_image_directory}")
+    test_labels_file = os.path.join(test_image_directory, 'labels.txt')
 
     try:
-        with open(labels_file, 'r') as f:
+        with open(train_labels_file, 'r') as f:
             reader = csv.reader(f)
-            lines = list(reader)
-        logging.info(f"Loaded {len(lines)} labeled entries from {labels_file}.")
+            train_lines = list(reader)
+        logging.info(f"Loaded {len(train_lines)} labeled entries from {train_labels_file}.")
     except FileNotFoundError:
-        logging.error(f"Labels file not found at {labels_file}.")
+        logging.error(f"Labels file not found at {train_labels_file}.")
+        raise
+    except Exception as e:
+        logging.error(f"Error reading labels file: {e}")
+        raise
+    
+    try:
+        with open(test_labels_file, 'r') as f:
+            reader = csv.reader(f)
+            test_lines = list(reader)
+        logging.info(f"Loaded {len(train_lines)} labeled entries from {test_labels_file}.")
+    except FileNotFoundError:
+        logging.error(f"Labels file not found at {test_labels_file}.")
         raise
     except Exception as e:
         logging.error(f"Error reading labels file: {e}")
         raise
 
-    # Shuffle and split lines into training and testing datasets
-    random.seed(random_seed)
-    random.shuffle(lines)
-    split_idx = math.floor(len(lines) * split_ratio)
-    train_lines = lines[:split_idx]
-    test_lines = lines[split_idx:]
-    logging.info(f"Split data into {len(train_lines)} training samples and {len(test_lines)} testing samples.")
+    # # Shuffle and split lines into training and testing datasets
+    # random.seed(random_seed)
+    # random.shuffle(lines)
+    # split_idx = math.floor(len(lines) * split_ratio)
+    # train_lines = lines[:split_idx]
+    # test_lines = lines[split_idx:]
+    # logging.info(f"Split data into {len(train_lines)} training samples and {len(test_lines)} testing samples.")
 
     train_data, train_labels = [], []
     test_image_paths = []  # List to store paths of test images
     for line in train_lines:
-        img_path = os.path.join(image_directory, line[0] + image_type)
+        img_path = os.path.join(train_image_directory, line[0] + image_type)
         img = cv2.imread(img_path)
         if img is None:
             logging.warning(f"Failed to load image: {img_path}. Skipping.")
@@ -295,8 +313,9 @@ def load_data(image_directory='./2024F_imgs', image_type='.png', image_size=(33,
         #     img_contour, cropped_original = cv2.resize(img, image_size), cv2.resize(img, image_size)
 
         # else:
-        img_contour, cropped_original = extract_sign_from_cardboard(img, image_size)
+        img_contour, cropped_original, resized_img_wout_preprocessing = extract_sign_from_cardboard(img, image_size, plotting=False)
         img_contour = img_contour.flatten()
+        resized_img_wout_preprocessing = resized_img_wout_preprocessing.flatten()
 
         # Extract spatial gradient features
         spatial_features = compute_spatial_gradient_features(cropped_original, grid_size)
@@ -305,7 +324,7 @@ def load_data(image_directory='./2024F_imgs', image_type='.png', image_size=(33,
         edge_features = compute_edge_features(cropped_original)
 
         # Combine all features
-        combined_features = np.hstack([img_contour, spatial_features, edge_features])
+        combined_features = np.hstack([img_contour, spatial_features, edge_features, resized_img_wout_preprocessing])
 
         train_data.append(combined_features)
         train_labels.append(int(line[1]))
@@ -319,15 +338,16 @@ def load_data(image_directory='./2024F_imgs', image_type='.png', image_size=(33,
 
         test_data, test_labels = [], []
         for line in test_lines:
-            img_path = os.path.join(image_directory, line[0] + image_type)
+            img_path = os.path.join(test_image_directory, line[0] + image_type)
             img = cv2.imread(img_path)
             if img is None:
                 logging.warning(f"Failed to load image: {img_path}. Skipping.")
                 continue
 
             # Extract contour features
-            img_contour, cropped_original = extract_sign_from_cardboard(img, image_size)
+            img_contour, cropped_original, resized_img_wout_preprocessing = extract_sign_from_cardboard(img, image_size)
             img_contour = img_contour.flatten()
+            resized_img_wout_preprocessing = resized_img_wout_preprocessing.flatten()
 
             # Extract spatial gradient features
             spatial_features = compute_spatial_gradient_features(cropped_original, grid_size)
@@ -336,7 +356,7 @@ def load_data(image_directory='./2024F_imgs', image_type='.png', image_size=(33,
             edge_features = compute_edge_features(cropped_original)
 
             # Combine all features
-            combined_features = np.hstack([img_contour, spatial_features, edge_features])
+            combined_features = np.hstack([img_contour, spatial_features, edge_features, resized_img_wout_preprocessing])
 
             test_data.append(combined_features)
             test_labels.append(int(line[1]))
