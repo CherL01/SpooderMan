@@ -7,7 +7,7 @@
     </scene>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>-0.729855 2.44761 20.0548 0 1.5698 0.011624</pose>
+        <pose>-0.547458 0.496577 12.2305 2.3e-05 1.5698 1.5523</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -685,76 +685,436 @@
       <pose>-0.476956 -0.470852 0 0 -0 0</pose>
     </model>
     <state world_name='default'>
-      <sim_time>6779 709000000</sim_time>
-      <real_time>146 946419439</real_time>
-      <wall_time>1730169233 669639871</wall_time>
-      <iterations>145504</iterations>
+      <sim_time>4972 345000000</sim_time>
+      <real_time>45 551017918</real_time>
+      <wall_time>1731474419 282393799</wall_time>
+      <iterations>45500</iterations>
       <model name='7785_maze'>
-        <pose>-1.37915 -1.39328 0 0 -0 0</pose>
+        <pose>-1.38825 -1.40559 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>-1.37915 -1.39328 0 0 -0 0</pose>
+          <pose>-1.38825 -1.40559 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueCArrow_clone'>
+        <pose>4.43832 2.2384 0.063686 1.5708 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.43832 2.2384 0.063686 1.5708 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueCArrow_clone_0'>
+        <pose>0.708938 2.2356 0.058051 1.5708 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.708938 2.2356 0.058051 1.5708 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueCArrow_clone_clone'>
+        <pose>3.69601 1.31543 0.063686 1.57079 -0 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>3.69601 1.31543 0.063686 1.57079 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueCArrow_clone_clone_clone'>
+        <pose>4.59876 -0.507545 0.063686 1.57079 -0 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.59876 -0.507545 0.063686 1.57079 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueSArrow'>
+        <pose>0.023207 2.23596 0.207338 -1.5708 -0 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.023207 2.23596 0.207338 -1.5708 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueSArrow_clone'>
+        <pose>-0.5209 0.753244 0.187489 -1.5708 -4e-06 1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>-0.5209 0.753244 0.187489 -1.5708 -4e-06 1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueSArrow_clone_0'>
+        <pose>1.70045 -0.501767 0.1914 -1.57079 -0 -3e-06</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1.70045 -0.501767 0.1914 -1.57079 -0 -3e-06</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueSArrow_clone_clone'>
+        <pose>4.96271 1.71891 0.164514 -1.5708 -4e-06 1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.96271 1.71891 0.164514 -1.5708 -4e-06 1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueSArrow_clone_clone_clone'>
+        <pose>4.05251 0.784278 0.164514 -1.5708 -4e-06 1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.05251 0.784278 0.164514 -1.5708 -4e-06 1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueSArrow_clone_clone_clone_0'>
+        <pose>4.9588 -0.12182 0.164514 -1.5708 -4e-06 1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.9588 -0.12182 0.164514 -1.5708 -4e-06 1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueSArrow_clone_clone_clone_0_clone'>
+        <pose>1.30962 0.746137 0.164514 -1.5708 -4e-06 1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1.30962 0.746137 0.164514 -1.5708 -4e-06 1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='BlueSArrow_clone_clone_clone_0_clone_clone'>
+        <pose>0.396075 0.779357 0.164514 -1.5708 -4e-06 1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.396075 0.779357 0.164514 -1.5708 -4e-06 1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenCArrow'>
+        <pose>-0.526034 -0.126205 0.048888 1.5708 -0 1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>-0.526034 -0.126205 0.048888 1.5708 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenCArrow_clone'>
+        <pose>2.22449 0.940143 0.048889 1.57079 -0 -1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.22449 0.940143 0.048889 1.57079 -0 -1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenCArrow_clone_0'>
+        <pose>2.21199 0.801172 0.048888 1.5708 -0 1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.21199 0.801172 0.048888 1.5708 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenCArrow_clone_1'>
+        <pose>3.13754 1.86816 0.048888 1.57079 -0 -1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>3.13754 1.86816 0.048888 1.57079 -0 -1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenCArrow_clone_2'>
+        <pose>1.30615 -0.133411 0.048888 1.5708 -0 1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1.30615 -0.133411 0.048888 1.5708 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenCArrow_clone_2_clone'>
+        <pose>0.78525 0.411652 0.048888 1.5708 4e-06 4e-06</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.78525 0.411652 0.048888 1.5708 4e-06 4e-06</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow'>
+        <pose>0.034912 -0.496872 0.105135 1.5708 -0 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.034912 -0.496872 0.105135 1.5708 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow_clone'>
+        <pose>1.6222 2.23812 0.120657 1.57079 -0 -3e-06</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1.6222 2.23812 0.120657 1.57079 -0 -3e-06</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow_clone_0'>
+        <pose>3.65771 1.32356 0.105135 1.5708 -0 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>3.65771 1.32356 0.105135 1.5708 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow_clone_0_clone'>
+        <pose>4.0448 0.960548 0.105135 1.5708 -4e-06 -1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.0448 0.960548 0.105135 1.5708 -4e-06 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow_clone_0_clone_clone'>
+        <pose>4.96334 0.98607 0.105135 1.5708 -4e-06 -1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.96334 0.98607 0.105135 1.5708 -4e-06 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow_clone_0_clone_clone_0'>
+        <pose>1.30243 0.950905 0.105135 1.5708 -4e-06 -1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1.30243 0.950905 0.105135 1.5708 -4e-06 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow_clone_1'>
+        <pose>2.75998 -0.505426 0.105135 1.5708 -0 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.75998 -0.505426 0.105135 1.5708 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow_clone_clone'>
+        <pose>2.73542 2.23165 0.120657 1.5708 -0 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.73542 2.23165 0.120657 1.5708 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='GreenSArrow_clone_clone_clone'>
+        <pose>0.942322 0.40263 0.110137 1.5708 -0 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.942322 0.40263 0.110137 1.5708 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Star'>
+        <pose>-0.521721 1.79669 0.065396 1.5708 0 -1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>-0.521721 1.79669 0.065396 1.5708 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Stop'>
+        <pose>0.896745 -0.497109 0.043695 1.5708 -0 -3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.896745 -0.497109 0.043695 1.5708 -0 -3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Stop_clone'>
+        <pose>0.388191 0.96137 0.043695 1.5708 -4e-06 -1.57079</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.388191 0.96137 0.043695 1.5708 -4e-06 -1.57079</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Stop_clone_0'>
+        <pose>3.49939 2.23832 0.043695 1.57079 -0 3e-06</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>3.49939 2.23832 0.043695 1.57079 -0 3e-06</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='Stop_clone_0_clone'>
+        <pose>2.57506 0.40559 0.043695 1.57079 -0 3e-06</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.57506 0.40559 0.043695 1.57079 -0 3e-06</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='UTurn'>
+        <pose>1.30188 0.044851 0.042456 1.5708 0 -1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1.30188 0.044851 0.042456 1.5708 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='UTurn_clone'>
+        <pose>3.13 1.86727 0.060269 1.5708 0 -1.5708</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>3.13 1.86727 0.060269 1.5708 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='UTurn_clone_clone'>
+        <pose>2.75609 0.408994 0.060269 1.5708 4e-06 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.75609 0.408994 0.060269 1.5708 4e-06 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='UTurn_clone_clone_clone'>
+        <pose>3.67598 -0.506315 0.060269 1.5708 4e-06 3.14159</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>3.67598 -0.506315 0.060269 1.5708 4e-06 3.14159</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
       <model name='burger'>
-        <pose>0.000129 -2e-06 0.014459 0.000163 0.010905 1.7e-05</pose>
+        <pose>-0.059578 -0.050137 0.014465 0.000163 0.010905 -0.002912</pose>
         <scale>1 1 1</scale>
         <link name='base_footprint'>
-          <pose>0.000129 -2e-06 0.014459 0.000163 0.010905 1.7e-05</pose>
-          <velocity>-1e-06 -5e-06 -0.078221 0.000115 0.000388 0</velocity>
-          <acceleration>-0.000321 1.8e-05 1.44808 1e-05 0.102519 -3e-06</acceleration>
-          <wrench>-0.000321 1.8e-05 1.44808 0 -0 0</wrench>
+          <pose>-0.059578 -0.050137 0.014465 0.000163 0.010905 -0.002912</pose>
+          <velocity>3e-06 -4e-06 -0.073075 0.000118 0.000874 0</velocity>
+          <acceleration>0.000975 -1.4e-05 0.798166 0.000272 0.095946 1.6e-05</acceleration>
+          <wrench>0.000975 -1.4e-05 0.798166 0 -0 0</wrench>
         </link>
         <link name='base_link'>
-          <pose>0.000129 -2e-06 0.014463 0.000163 0.010905 1.7e-05</pose>
-          <velocity>-1e-06 -5e-06 -0.078971 0.000117 0.000395 0</velocity>
-          <acceleration>0.007002 1.7e-05 1.46887 1e-05 0.104163 -5e-06</acceleration>
-          <wrench>0.005782 1.4e-05 1.2129 0 -0 0</wrench>
+          <pose>-0.059578 -0.050137 0.014469 0.000163 0.010905 -0.002912</pose>
+          <velocity>3e-06 -5e-06 -0.073836 0.000119 0.000881 0</velocity>
+          <acceleration>0.007722 -3.3e-05 0.800187 0.000272 0.095935 1.5e-05</acceleration>
+          <wrench>0.006376 -2.8e-05 0.660742 0 -0 0</wrench>
         </link>
         <link name='base_scan'>
-          <pose>0.000129 -2e-06 0.014463 0.000163 0.010905 1.7e-05</pose>
-          <velocity>-1e-06 -5e-06 -0.078885 0.000117 0.000394 0</velocity>
-          <acceleration>0.016408 1.8e-05 1.4655 9e-06 0.104225 -3e-06</acceleration>
-          <wrench>0.00187 2e-06 0.167067 0 -0 0</wrench>
+          <pose>-0.059578 -0.050137 0.014468 0.000163 0.010905 -0.002912</pose>
+          <velocity>3e-06 -5e-06 -0.073748 0.000119 0.00088 0</velocity>
+          <acceleration>0.016439 -5.8e-05 0.79905 0.000272 0.095932 1.6e-05</acceleration>
+          <wrench>0.001874 -7e-06 0.091092 0 -0 0</wrench>
         </link>
         <link name='camera_link'>
-          <pose>0.000129 -2e-06 0.014459 0.000163 0.010906 1.7e-05</pose>
-          <velocity>1e-06 -5e-06 -0.078194 0.000115 0.00036 0</velocity>
-          <acceleration>-0.000291 2e-05 1.44751 1e-05 0.103163 -3e-06</acceleration>
-          <wrench>-0.000291 2e-05 1.44751 0 -0 0</wrench>
+          <pose>-0.059578 -0.050137 0.014464 0.000163 0.010905 -0.002912</pose>
+          <velocity>6e-06 -5e-06 -0.073047 0.000118 0.000846 0</velocity>
+          <acceleration>0.000976 -1.4e-05 0.798202 0.000272 0.095909 1.6e-05</acceleration>
+          <wrench>0.000976 -1.4e-05 0.798202 0 -0 0</wrench>
         </link>
         <link name='camera_rgb_frame'>
-          <pose>0.070292 -1.8e-05 0.1207 0.000163 0.010906 1.7e-05</pose>
-          <velocity>3.9e-05 -1.7e-05 -0.078193 0.000115 0.000357 0</velocity>
-          <acceleration>0.02163 1.7e-05 1.43243 9e-06 0.10327 -3e-06</acceleration>
-          <wrench>0.000757 1e-06 0.050135 0 -0 0</wrench>
+          <pose>0.010584 -0.050359 0.120705 0.000163 0.010905 -0.002912</pose>
+          <velocity>9.5e-05 -1.7e-05 -0.07308 0.000118 0.000843 0</velocity>
+          <acceleration>0.021354 -6.9e-05 0.784778 0.000272 0.095903 1.7e-05</acceleration>
+          <wrench>0.000747 -2e-06 0.027467 0 -0 0</wrench>
         </link>
         <link name='caster_back_link'>
-          <pose>-0.080909 -2e-06 0.011347 -2.64798 0.520867 1.38448</pose>
-          <velocity>-2e-06 -3e-06 -0.078854 0.000555 -0.000398 -0</velocity>
-          <acceleration>-9.9e-05 0.001427 1.55522 0.000817 -0.001407 0</acceleration>
-          <wrench>-0 7e-06 0.007776 0 -0 0</wrench>
+          <pose>-0.140617 -0.0499 0.011352 0.11035 1.43379 1.66698</pose>
+          <velocity>-2e-06 -2e-06 -0.073685 0.000484 -0.000388 -3.14159</velocity>
+          <acceleration>1.7e-05 -3e-06 0.80422 0.000166 0.002341 0</acceleration>
+          <wrench>0 -0 0.004021 0 -0 0</wrench>
         </link>
         <link name='imu_link'>
-          <pose>0.000129 -2e-06 0.014459 0.000163 0.010906 1.7e-05</pose>
-          <velocity>1e-06 -5e-06 -0.07822 0.000115 0.000365 0</velocity>
-          <acceleration>-0.000289 1.9e-05 1.44811 1e-05 0.103065 -3e-06</acceleration>
-          <wrench>-0.000289 1.9e-05 1.44811 0 -0 0</wrench>
+          <pose>-0.059578 -0.050137 0.014464 0.000163 0.010905 -0.002912</pose>
+          <velocity>5e-06 -5e-06 -0.073074 0.000118 0.000851 0</velocity>
+          <acceleration>0.000976 -1.4e-05 0.798167 0.000272 0.095914 1.6e-05</acceleration>
+          <wrench>0.000976 -1.4e-05 0.798167 0 -0 0</wrench>
         </link>
         <link name='wheel_left_link'>
-          <pose>-0.010532 -4.3e-05 0.057582 3.13971 0.495776 3.14108</pose>
-          <velocity>2.1e-05 -6e-06 -0.080478 0.000118 0.000394 0</velocity>
-          <acceleration>0.003416 -0 1.45995 -1.9e-05 0.103513 1.3e-05</acceleration>
-          <wrench>9.7e-05 -0 0.041607 0 -0 0</wrench>
+          <pose>-0.056166 -0.050191 0.060129 3.13983 -0.138332 3.1388</pose>
+          <velocity>4.9e-05 -7e-06 -0.075368 0.00012 0.000881 0</velocity>
+          <acceleration>0.003165 -9e-06 0.795607 0.000282 0.095925 2.3e-05</acceleration>
+          <wrench>9e-05 -0 0.022674 0 -0 0</wrench>
         </link>
         <link name='wheel_right_link'>
-          <pose>-0.021462 -3.1e-05 0.044939 3.13781 1.24396 3.13877</pose>
-          <velocity>1.6e-05 -5e-06 -0.080525 0.000118 0.000395 0</velocity>
-          <acceleration>0.003415 -0 1.45995 -1.4e-05 0.1035 -2.2e-05</acceleration>
-          <wrench>9.7e-05 -0 0.041607 0 -0 0</wrench>
+          <pose>-0.082257 -0.050095 0.040017 3.13186 1.4632 3.12979</pose>
+          <velocity>3.1e-05 -4e-06 -0.075396 0.00012 0.000881 0</velocity>
+          <acceleration>0.003165 -9e-06 0.795608 0.000271 0.095924 -3.2e-05</acceleration>
+          <wrench>9e-05 -0 0.022674 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -768,10 +1128,22 @@
         </link>
       </model>
       <light name='user_point_light_0'>
-        <pose>5.74061 3.49749 4.86752 0 -0 0</pose>
+        <pose>4.81441 2.09251 1 0 -0 0</pose>
       </light>
-      <light name='user_point_light_0_clone'>
-        <pose>-1.29302 -1.30548 4.29162 0 -0 0</pose>
+      <light name='user_point_light_0_clone_0'>
+        <pose>4.8352 -0.402302 1 0 -0 0</pose>
+      </light>
+      <light name='user_point_light_0_clone_0_clone'>
+        <pose>-0.336617 -0.36362 1 0 -0 0</pose>
+      </light>
+      <light name='user_point_light_0_clone_0_clone_clone'>
+        <pose>-0.612861 2.07782 1 0 -0 0</pose>
+      </light>
+      <light name='user_point_light_0_clone_0_clone_clone_clone'>
+        <pose>2.52331 -0.515585 0.55783 0 -0 0</pose>
+      </light>
+      <light name='user_point_light_0_clone_0_clone_clone_clone_clone'>
+        <pose>2.22886 2.22462 1 0 -0 0</pose>
       </light>
     </state>
     <light name='user_point_light_0' type='point'>
@@ -790,24 +1162,6 @@
         <inner_angle>0</inner_angle>
         <outer_angle>0</outer_angle>
         <falloff>0</falloff>
-      </spot>
-    </light>
-    <light name='user_point_light_0_clone' type='point'>
-      <pose>-2.44225 -0.798256 6.04232 0 -0 0</pose>
-      <diffuse>0.494118 0.494118 0.494118 1</diffuse>
-      <specular>0.0901961 0.0901961 0.0901961 1</specular>
-      <direction>0 0 -1</direction>
-      <attenuation>
-        <range>20</range>
-        <constant>0.3</constant>
-        <linear>0.05</linear>
-        <quadratic>0</quadratic>
-      </attenuation>
-      <cast_shadows>0</cast_shadows>
-      <spot>
-        <inner_angle>0.2</inner_angle>
-        <outer_angle>1</outer_angle>
-        <falloff>1</falloff>
       </spot>
     </light>
     <model name='ground_plane'>
@@ -858,6 +1212,1392 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-1.87447 -4.61833 0 0 -0 0</pose>
+    </model>
+    <model name='Star'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://Star/meshes/Star.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://Star/meshes/Star.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-1.95259 2.16336 0 0 -0 0</pose>
+    </model>
+    <model name='UTurn'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://UTurn/meshes/UTurn.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://UTurn/meshes/UTurn.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-1.94401 1.27139 0 0 -0 0</pose>
+    </model>
+    <model name='Stop'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://Stop/meshes/Stop.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://Stop/meshes/Stop.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-2.1296 -1.50975 0 0 -0 0</pose>
+    </model>
+    <model name='GreenSArrow'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-2.48882 0.490931 0 0 -0 0</pose>
+    </model>
+    <model name='GreenCArrow'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.326681 -3.24955 0 0 -0 0</pose>
+    </model>
+    <model name='BlueSArrow'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-3.62124 -0.302223 0 0 -0 0</pose>
+    </model>
+    <model name='UTurn_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://UTurn/meshes/UTurn.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://UTurn/meshes/UTurn.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>3.13286 1.86636 0.042456 1.5708 0 -1.5708</pose>
+    </model>
+    <model name='BlueCArrow_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueCArrow/meshes/BlueCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueCArrow/meshes/BlueCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.53461 2.23065 0.058051 1.5708 -0 0</pose>
+    </model>
+    <model name='GreenCArrow_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.36617 0.780721 0.048888 1.5708 -0 1.5708</pose>
+    </model>
+    <model name='UTurn_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://UTurn/meshes/UTurn.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://UTurn/meshes/UTurn.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.72023 0.652942 0.060269 1.5708 0 -1.5708</pose>
+    </model>
+    <model name='GreenSArrow_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>1.83686 2.16465 0.105135 1.5708 -0 3.14159</pose>
+    </model>
+    <model name='BlueCArrow_clone_0'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueCArrow/meshes/BlueCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueCArrow/meshes/BlueCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.708938 2.2356 0.058051 1.5708 -0 0</pose>
+    </model>
+    <model name='BlueSArrow_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.122457 0.927499 0.207338 -1.5708 -0 3.14159</pose>
+    </model>
+    <model name='Stop_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://Stop/meshes/Stop.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://Stop/meshes/Stop.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.217964 0.878518 0.043695 1.5708 -0 -3.14159</pose>
+    </model>
+    <model name='GreenSArrow_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.51092 2.23241 0.120657 1.57079 -0 -3e-06</pose>
+    </model>
+    <model name='BlueCArrow_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueCArrow/meshes/BlueCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueCArrow/meshes/BlueCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>3.52841 1.31543 0.063686 1.5708 -0 0</pose>
+    </model>
+    <model name='GreenCArrow_clone_0'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.21536 0.777198 0.048888 1.5708 -0 1.5708</pose>
+    </model>
+    <model name='GreenCArrow_clone_1'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>3.1341 1.71928 0.048888 1.5708 -0 1.5708</pose>
+    </model>
+    <light name='user_point_light_0_clone_0' type='point'>
+      <pose>4.43918 0.045797 1 0 -0 0</pose>
+      <diffuse>0.498039 0.498039 0.498039 1</diffuse>
+      <specular>0.0980392 0.0980392 0.0980392 1</specular>
+      <direction>0 0 -1</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>1</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <light name='user_point_light_0_clone_0_clone' type='point'>
+      <pose>0.006098 -0.002351 1 0 -0 0</pose>
+      <diffuse>0.498039 0.498039 0.498039 1</diffuse>
+      <specular>0.0980392 0.0980392 0.0980392 1</specular>
+      <direction>0 0 -1</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>1</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <light name='user_point_light_0_clone_0_clone_clone' type='point'>
+      <pose>0.037857 1.80551 1 0 -0 0</pose>
+      <diffuse>0.498039 0.498039 0.498039 1</diffuse>
+      <specular>0.0980392 0.0980392 0.0980392 1</specular>
+      <direction>0 0 -1</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>1</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <light name='user_point_light_0_clone_0_clone_clone_clone' type='point'>
+      <pose>3.10781 0.472874 1 0 -0 0</pose>
+      <diffuse>0.498039 0.498039 0.498039 1</diffuse>
+      <specular>0.0980392 0.0980392 0.0980392 1</specular>
+      <direction>0 0 -1</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>1</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <light name='user_point_light_0_clone_0_clone_clone_clone_clone' type='point'>
+      <pose>1.87127 2.26853 1 0 -0 0</pose>
+      <diffuse>0.498039 0.498039 0.498039 1</diffuse>
+      <specular>0.0980392 0.0980392 0.0980392 1</specular>
+      <direction>0 0 -1</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>1</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <model name='GreenSArrow_clone_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.95345 0.40263 0.120657 1.5708 -0 3.14159</pose>
+    </model>
+    <model name='Stop_clone_0'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://Stop/meshes/Stop.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://Stop/meshes/Stop.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>3.65214 2.22606 0.043695 1.5708 -0 -3.14159</pose>
+    </model>
+    <model name='GreenSArrow_clone_0'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>3.65771 1.32202 0.105135 1.5708 -0 3.14159</pose>
+    </model>
+    <model name='BlueSArrow_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>4.96271 1.66367 0.187489 -1.5708 -4e-06 1.57079</pose>
+    </model>
+    <model name='GreenSArrow_clone_0_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>3.85584 0.897205 0.105135 1.5708 -0 3.14159</pose>
+    </model>
+    <model name='GreenSArrow_clone_0_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>4.96334 0.98607 0.105135 1.5708 -4e-06 -1.5708</pose>
+    </model>
+    <model name='BlueSArrow_clone_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>4.05097 0.784278 0.164514 -1.5708 -4e-06 1.57079</pose>
+    </model>
+    <model name='BlueSArrow_clone_clone_clone_0'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>4.9588 -0.143636 0.164514 -1.5708 -4e-06 1.57079</pose>
+    </model>
+    <model name='BlueCArrow_clone_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueCArrow/meshes/BlueCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueCArrow/meshes/BlueCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>4.60504 -0.507545 0.063686 1.57079 -0 3.14159</pose>
+    </model>
+    <model name='UTurn_clone_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://UTurn/meshes/UTurn.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://UTurn/meshes/UTurn.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>3.63443 -0.506315 0.060269 1.5708 4e-06 3.14159</pose>
+    </model>
+    <model name='GreenCArrow_clone_2'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>1.30462 -0.169069 0.048888 1.5708 -0 1.5708</pose>
+    </model>
+    <model name='GreenSArrow_clone_1'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.77548 -0.505019 0.105135 1.5708 -0 3.14159</pose>
+    </model>
+    <model name='BlueSArrow_clone_0'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>1.86973 -0.500606 0.207338 -1.5708 -0 3.14159</pose>
+    </model>
+    <model name='Stop_clone_0_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://Stop/meshes/Stop.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://Stop/meshes/Stop.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.57506 0.40559 0.043695 1.57079 -0 3e-06</pose>
+    </model>
+    <model name='BlueSArrow_clone_clone_clone_0_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>1.30906 0.777026 0.164514 -1.5708 -4e-06 1.57079</pose>
+    </model>
+    <model name='BlueSArrow_clone_clone_clone_0_clone_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://BlueSArrow/meshes/BlueSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.398879 0.779357 0.164514 -1.5708 -4e-06 1.57079</pose>
+    </model>
+    <model name='GreenSArrow_clone_0_clone_clone_0'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenSArrow/meshes/GreenSArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>1.30243 0.950905 0.105135 1.5708 -4e-06 -1.5708</pose>
+    </model>
+    <model name='GreenCArrow_clone_2_clone'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://GreenCArrow/meshes/GreenCArrow.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.738289 0.610334 0.048888 1.5708 -0 1.5708</pose>
     </model>
   </world>
 </sdf>
