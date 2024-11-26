@@ -227,7 +227,6 @@ class NavigateMaze(Node):
 
         elif self.state == 2:
             self.get_logger().info(f'goal reached!')
-            self.stop()
 
             return True
 
