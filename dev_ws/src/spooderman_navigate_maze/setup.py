@@ -24,6 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'navigate_maze = spooderman_navigate_maze.navigate_maze:main',
         ],
     },
 )
