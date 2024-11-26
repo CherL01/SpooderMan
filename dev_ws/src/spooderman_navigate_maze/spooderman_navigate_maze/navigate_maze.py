@@ -5,14 +5,22 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSReliabilityPolicy, QoSHistoryPolicy
 from nav_msgs.msg import Odometry
+from sensor_msgs.msg import CompressedImage
 from geometry_msgs.msg import Point, Quaternion, Twist
 from geometry_msgs.msg import PointStamped, PoseStamped, Point, PoseWithCovarianceStamped
 from std_msgs.msg import Float32, Float32MultiArray
+from tensorflow.keras.models import load_model
 
 # etc
 import numpy as np
 import math
 import time
+import cv2
+from cv_bridge import CvBridge
+import os
+
+# imports from other files
+from classifier import load_data, evaluate_model
 
 class NavigateMaze(Node):
 
@@ -21,26 +29,52 @@ class NavigateMaze(Node):
         super().__init__('navigate_maze')
 
         # maze setup
-        self.maze = [[f'{row}{col}' for col in range(6)] for row in ['A', 'B', 'C']]
-        self.maze_coords = {} # TODO: set up coords for each square in maze
+        self.maze = [[f'{row}_{col}' for col in range(6)] for row in ['A', 'B', 'C']]
+        self.maze_coords = { # TODO: set up coords for each square in maze, can find from click point in rviz
+            'A_0',
+            'A_1', 
+            'A_2', 
+            'A_3', 
+            'A_4', 
+            'A_5', 
+            'B_0', 
+            'B_1', 
+            'B_2', 
+            'B_3', 
+            'B_4', 
+            'B_5', 
+            'C_0', 
+            'C_1', 
+            'C_2', 
+            'C_3', 
+            'C_4', 
+            'C_5'
+            }
         self.directions = ['N', 'E', 'S', 'W']
         self.direction_quaternion = { # TODO: set up quaternion directions for each direction, can i calculate based on current quaternion?
-            'N': 0, 
-            'E': 1, 
-            'S': 2, 
-            'W': 3
+            'N', 
+            'E', 
+            'S', 
+            'W'
             }
+        self.walls = {
+            'N': {0: ['A'], 1: ['C', 'A'], 2: ['B', 'A'], 3: ['A'], 4: ['B', 'A'], 5: ['A']}, # 0, 1, 2, 3, 4, 5
+            'E': {'A': [3, 5], 'B': [0, 2, 3, 4, 5], 'C': [1, 5]}, # A, B, C
+            'S': {0: ['C'], 1: ['B', 'C'], 2: ['A', 'C'], 3: ['C'], 4: ['A', 'C'], 5: ['C']}, # 0, 1, 2, 3, 4, 5
+            'W': {'A': [4, 0], 'B': [5, 4, 3, 1, 0], 'C': [2, 0]} # A, B, C
+        }
         
         # robot setup
         self.state = 0 # initialized as 0 to start classification
         self.action = None # initialized as None because have not classified direction sign yet
         self.waypoint_reached = True # initialized as True to start classification
         self.classification_result = None # initialized as None to start classification
-        self.waypoint_coords = None # initialized as None to start classification
-        self.currect_direction = 'N' # initialized as 'N' (ALWAYS FACE THE ROBOT NORTH AT THE START)
+        self.goal_pose = None
+        self.maze_position = None
+        self.current_direction = None
 
         ### qos profiles
-        #Set up QoS Profiles for passing numbers over WiFi
+        # Set up QoS Profiles for passing numbers over WiFi
         num_qos_profile = QoSProfile(
 		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
 		    history=QoSHistoryPolicy.KEEP_LAST,
@@ -48,16 +82,25 @@ class NavigateMaze(Node):
 		    depth=1
 		)
 
-        #Set up QoS Profiles for passing pose info over WiFi
+        # Set up QoS Profiles for passing pose info over WiFi
         pos_qos_profile = QoSProfile(
 		    reliability=QoSReliabilityPolicy.RELIABLE,
 		    durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
 		    depth=1
 		)
+        
+        # Set up QoS Profiles for passing images over WiFi
+        image_qos_profile = QoSProfile(
+		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
+		    history=QoSHistoryPolicy.KEEP_LAST,
+		    durability=QoSDurabilityPolicy.VOLATILE,
+		    depth=1
+		)
+        ###
 
         ### navigation setup
         self.map_name = 'map'
-        self.mapPosition = Point()
+        self.mapPosition = PoseStamped()
 
         self.map_position_subscriber = self.create_subscription(
 				PoseWithCovarianceStamped,
@@ -72,13 +115,33 @@ class NavigateMaze(Node):
 				num_qos_profile)
         self.position_publisher
         ###
+        
+        ### classification setup
+        self.frame_count = 0
+        self.max_frame_count = 15
+        self.save_folder = os.path.abspath(os.path.join("dev_ws", "src", "spooderman_navigate_maze", "maze_images"))
+        self.model_path = os.path.abspath(os.path.join("dev_ws", "src", "spooderman_navigate_maze", "spooderman_navigate_maze", "classifier_model.h5"))
+        self.test_folder = self.save_folder
+        
+        #Declare that the minimal_video_subscriber node is subcribing to the /camera/image/compressed topic.
+        self._video_subscriber = self.create_subscription(
+				CompressedImage,
+				'/image_raw/compressed',
+				self._image_callback,
+				image_qos_profile)
+        self._video_subscriber
+        ###
 
     def map_position_callback(self, msg):
         self.get_logger().info('receiving robot pose')
-        self.mapPosition.x, self.mapPosition.y, self.current_quaternion = msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.orientation
-        self.get_logger().info('received map pose is x:{}, y:{}, quaternion:{}'.format(self.mapPosition.x, self.mapPosition.y, self.current_quaternion))
+        self.mapPosition = msg
+        self.get_logger().info(f'received map pose is x:{self.mapPosition.pose.position.x}, y:{self.mapPosition.pose.position.y}')
+        
+    def _image_callback(self, CompressedImage):	
+		# The "CompressedImage" is transformed to a color image in BGR space and is store in "_imgBGR"
+        self._imgBGR = CvBridge().compressed_imgmsg_to_cv2(CompressedImage, "bgr8")
 
-    def publish_position(self, x, y, quaternion):
+    def publish_position(self, x, y, z, qx, qy, qz, qw):
 
         # TODO: modify to accomodate for quaternion
 
@@ -89,17 +152,30 @@ class NavigateMaze(Node):
 
         pose.pose.position.x = x
         pose.pose.position.y = y
-        pose.pose.position.z = 0.0
+        pose.pose.position.z = z
 
         # placeholder quaternion
-        pose.pose.orientation.x = 0.0
-        pose.pose.orientation.y = 0.0
-        pose.pose.orientation.z = 0.0
-        pose.pose.orientation.w = 1.0
+        pose.pose.orientation.x = qx
+        pose.pose.orientation.y = qy
+        pose.pose.orientation.z = qz
+        pose.pose.orientation.w = qw
+        
+        self.goal_pose = pose
 
         self.get_logger().info(f'publishing goal: {pose.pose.position.x}, {pose.pose.position.y}, {pose.pose.orientation.x}, {pose.pose.orientation.y}, {pose.pose.orientation.z}, {pose.pose.orientation.w}')
 
         self.position_publisher.publish(pose)
+        
+    def localize(self):
+        
+        # TODO: add code to localize robot at start of maze
+        # localize based on 2d pose estimate in rviz
+        # find closest square in maze to robot's current position and set as current position
+        # find closest quaternion direction to robot's current quaternion and set as current direction
+        
+        # placeholder
+        self.maze_position = 'C_1'
+        self.current_direction = 'N'
 
     def get_state(self):
         
@@ -157,76 +233,178 @@ class NavigateMaze(Node):
 
         return False
     
+    def take_picture(self):
+        
+        frame_path = os.path.join(self.save_folder, f"frame_{self.frame_count}.png")
+        cv2.imwrite(frame_path, self._imgBGR)
+        
+    def delete_pictures(self):
+            
+        for i in range(self.max_frame_count):
+            frame_path = os.path.join(self.save_folder, f"frame_{i}.png")
+            os.remove(frame_path)
+    
     def classify_direction_sign(self):
 
         # call classifier here
         # get average classification result
 
         # TODO: add code to take picture and classify direction sign
-
-        # placeholder
-        self.classification_result = 1
+        if self.frame_count < self.max_frame_count: # take pictures for classification
+            self.take_picture()
+            self.frame_count += 1
+            
+        else: # got enough pictures, start classification
+            
+            self.logger.get_info('starting classification, loading model')
+            model = load_model(self.model_path)
+            
+            predicted_labels = evaluate_model(model, self.test_folder)
+            self.logger.get_info(f'predicted labels: {predicted_labels.shape}') # need to check shape
+            
+            self.classification_result = np.argmax(np.mean(predicted_labels, axis=0))
+            self.logger.get_info(f'classification result: {self.classification_result}')
+            
+            self.delete_pictures()
+            self.frame_count = 0
 
     def navigate_to_waypoint(self):
             
         # follow direction sign
         if self.action == 1:
-            self.turn_left()
+            self.move('left')
 
         elif self.action == 2:
-            self.turn_right()
+            self.move('right')
 
-        elif self.action == 3:
-            self.u_turn()
+        elif self.action == 3 or self.action == 4:
+            self.move('u-turn')
 
-        elif self.action == 4:
-            self.u_turn()
-
-        # follow path
-        else:
-            self.follow_path()
-
-    def turn_left(self):
+    def move(self, turn_direction):
 
         # TODO: add code to calculate coordinate + quaternion for turning left, and send to nav2 stack (can use lab 5 code)
 
-        pass
+        new_heading = self.get_new_heading(self.current_direction, turn_direction)
+        next_square = self.get_next_square(self.maze_position, new_heading)
+        
+        x, y, z = self.maze_coords[next_square]
+        qx, qy, qz, qw = self.direction_quaternion[new_heading]
+        
+        self.publish_position(x, y, z, qx, qy, qz, qw)
+    
+    def get_new_heading(self, current_heading, turn_direction):
+        
+        current_heading_index = self.directions.index(current_heading)
+        if turn_direction == 'left':
+            new_heading_index = (current_heading_index - 1) % 4
+            
+        elif turn_direction == 'right':
+            new_heading_index = (current_heading_index + 1) % 4
+            
+        elif turn_direction == 'u-turn':
+            new_heading_index = (current_heading_index + 2) % 4
+            
+        else:
+            new_heading_index = 0
+            self.logger.get_info('invalid turn direction')
+            
+        new_heading = self.directions[new_heading_index]
+        
+        return new_heading
+    
+    def get_next_square(self, current_square, new_heading):
+        
+        row = current_square.split('_')[0] # A, B, C
+        col = int(current_square.split('_')[1]) # 0, 1, 2, 3, 4, 5
+        
+        if new_heading == 'E' or new_heading == 'W': # look at cols, row stays the same
+            if new_heading == 'E': # E is increasing col, check when col > current col
+                walls_list = self.walls['E'][col]
+                for wall in walls_list:
+                    if wall > col:
+                        next_square = f'{row}_{wall}'
+                        break
+                    
+            else:
+                walls_list = self.walls['W'][row]
+                for wall in walls_list:
+                    if wall < col:
+                        next_square = f'{row}_{wall}'
+                        break
+            
+        elif new_heading == 'N' or new_heading == 'S': # look at rows, col stays the same
+            if new_heading == 'N': # N is decreasing row, check when row < current row
+                walls_list = self.walls['N'][row]
+                for wall in walls_list:
+                    if wall < row:
+                        next_square = f'{wall}_{col}'
+                        break
+                
+            else:
+                walls_list = self.walls['S'][row]
+                for wall in walls_list:
+                    if wall > row:
+                        next_square = f'{wall}_{col}'
+                        break
+                    
+        else:
+            self.logger.get_info('invalid heading')
+            
+        return next_square
+    
+    def compute_angle_difference(self, q1, q2):
+        
+        # Compute the relative quaternion
+        q1_conjugate = np.array([-q1[0], -q1[1], -q1[2], q1[3]])
+        relative = np.array([
+            q1_conjugate[3]*q2[0] + q1_conjugate[0]*q2[3] + q1_conjugate[1]*q2[2] - q1_conjugate[2]*q2[1],
+            q1_conjugate[3]*q2[1] - q1_conjugate[0]*q2[2] + q1_conjugate[1]*q2[3] + q1_conjugate[2]*q2[0],
+            q1_conjugate[3]*q2[2] + q1_conjugate[0]*q2[1] - q1_conjugate[1]*q2[0] + q1_conjugate[2]*q2[3],
+            q1_conjugate[3]*q2[3] - q1_conjugate[0]*q2[0] - q1_conjugate[1]*q2[1] - q1_conjugate[2]*q2[2]
+        ])
+        relative = relative / np.linalg.norm(relative)
 
-    def turn_right(self):
-        pass
-
-    def u_turn(self):
-        pass
-
-    def follow_path(self):
-        pass
+        # Compute the angle of rotation
+        angle_radians = 2 * np.arccos(relative[3])
+        return abs(np.rad2deg(angle_radians))
 
     def check_waypoint_reached(self):
 
         # TODO: add code to check if waypoint reached (can use lab 5 code but need to modify quaternion comparison)
 
-        x, y, z = self.waypoint_coords
+        x, y, z, qx, qy, qz, qw = self.goal_pose.pose.position.x, self.goal_pose.pose.position.y, self.goal_pose.pose.position.z, self.goal_pose.pose.orientation.x, self.goal_pose.pose.orientation.y, self.goal_pose.pose.orientation.z, self.goal_pose.pose.orientation.w
+        x_map, y_map, z_map, qx_map, qy_map, qz_map, qw_map = self.mapPosition.pose.position.x, self.mapPosition.pose.position.y, self.mapPosition.pose.position.z, self.mapPosition.pose.orientation.x, self.mapPosition.pose.orientation.y, self.mapPosition.pose.orientation.z, self.mapPosition.pose.orientation.w
 
-        goal_dist_tolerance = 0.1
+        angle_diff_deg = self.compute_angle_difference(np.array([qx, qy, qz, qw]), np.array([qx_map, qy_map, qz_map, qw_map]))
+
+        goal_dist_tolerance = 0.08
+        goal_angle_tolerance = 5
         
-        if (abs(self.mapPosition.x - x) < goal_dist_tolerance) and (abs(self.mapPosition.y - y) < goal_dist_tolerance):
+        if (abs(x_map - x) < goal_dist_tolerance) and (abs(y_map - y) < goal_dist_tolerance) and (angle_diff_deg < goal_angle_tolerance):
 
-            self.get_logger().info(f'goal reached: {self.mapPosition.x}, {self.mapPosition.y}')
+            self.get_logger().info('waypoint reached')
 
             return True
 
-        self.get_logger().info(f'goal not reached: {self.mapPosition.x}, {self.mapPosition.y}')
+        self.get_logger().info('still travelling to waypoint')
 
         return False
 
 def main():
     rclpy.init()
     navigate_maze = NavigateMaze()
+    localize = True
     
     while rclpy.ok():
 
         try:
-            rclpy.spin_once(navigate_maze) 
+            
+            rclpy.spin_once(navigate_maze)
+            
+            if localize:
+                navigate_maze.localize()
+                localize = False
+            
             navigation_complete = navigate_maze.get_state()
 
             if navigation_complete is True:
@@ -237,7 +415,7 @@ def main():
 
 	#Clean up and shutdown.
 
-    navigate_maze.destroy_node()  
+    navigate_maze.destroy_node()
     rclpy.shutdown()
 
 
