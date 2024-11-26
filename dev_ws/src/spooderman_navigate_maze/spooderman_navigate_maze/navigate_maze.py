@@ -71,6 +71,7 @@ class NavigateMaze(Node):
         self.waypoint_reached = True # initialized as True to start classification
         self.classification_result = None # initialized as None to start classification
         self.goal_pose = None
+        self.goal_pose_nums = None
         self.maze_position = None
         self.current_direction = None
         self.goal_position = None
@@ -153,7 +154,7 @@ class NavigateMaze(Node):
         self.get_logger().info(f'received map pose is x:{self.mapPosition.pose.pose.position.x}, y:{self.mapPosition.pose.pose.position.y}')
 
     def feedback_callback(self, msg):
-        self.distance_remaining, self.estimated_time_remaining = msg.feedback.distance_remaining, msg.feedback.estimated_time_remaining
+        self.distance_remaining, self.estimated_time_remaining = msg.feedback.distance_remaining, msg.feedback.estimated_time_remaining.sec
         self.get_logger().info(f'received feedback, distance remaining: {self.distance_remaining}, time remaining: {self.estimated_time_remaining}')
         
     def _image_callback(self, CompressedImage):	
@@ -181,7 +182,7 @@ class NavigateMaze(Node):
         
         self.goal_pose = pose
 
-        self.get_logger().info(f'publishing goal: {pose.pose.position.x}, {pose.pose.position.y}, {pose.pose.orientation.x}, {pose.pose.orientation.y}, {pose.pose.orientation.z}, {pose.pose.orientation.w}')
+        self.get_logger().info(f'publishing goal: {pose.pose.position.x}, {pose.pose.position.y}, {pose.pose.position.z}, {pose.pose.orientation.x}, {pose.pose.orientation.y}, {pose.pose.orientation.z}, {pose.pose.orientation.w}')
 
         self.position_publisher.publish(pose)
         
@@ -316,6 +317,8 @@ class NavigateMaze(Node):
         
         x, y, z = self.maze_coords[next_square]
         qx, qy, qz, qw = self.direction_quaternion[new_heading]
+
+        self.goal_pose_nums = (x, y, z, qx, qy, qz, qw)
         
         self.publish_position(x, y, z, qx, qy, qz, qw)
     
@@ -407,16 +410,16 @@ class NavigateMaze(Node):
         angle_diff_deg = self.compute_angle_difference(np.array([qx, qy, qz, qw]), np.array([qx_map, qy_map, qz_map, qw_map]))
         dist_diff = math.dist([x, y], [x_map, y_map])
 
-        goal_dist_tolerance = 0.1
+        goal_dist_tolerance = 0.20
         goal_angle_tolerance = 5
         
         # if (abs(x_map - x) < goal_dist_tolerance) and (abs(y_map - y) < goal_dist_tolerance): # and (angle_diff_deg < goal_angle_tolerance):
-        try:
-            if float(self.feedback.distance_remaining) < goal_dist_tolerance:
+        if self.distance_remaining is not None:
+            if float(self.distance_remaining) < goal_dist_tolerance and (dist_diff < goal_dist_tolerance):
 
                 self.get_logger().info('waypoint reached')
 
-                if self.feedback.estimated_time_remaining < 0.1:
+                if float(self.estimated_time_remaining) < 50:
 
                     self.maze_position = self.goal_position[0]
                     self.current_direction = self.goal_position[1]
@@ -426,7 +429,8 @@ class NavigateMaze(Node):
 
                     return True
                 
-                self.get_logger().info(f'waiting for robot to turn?, time remaining: {self.feedback.estimated_time_remaining}')
+                self.get_logger().info(f'waiting for robot to turn?, time remaining: {self.estimated_time_remaining}')
+                self.publish_position(x, y, z, qx, qy, qz, qw)
                 return False
 
             self.get_logger().info(f'still travelling to waypoint, {self.goal_position} not reached yet')
@@ -434,11 +438,13 @@ class NavigateMaze(Node):
             self.get_logger().info(f'goal x: {x}, goal y: {y}, goal z: {z}, goal qx: {qx}, goal qy: {qy}, goal qz: {qz}, goal qw: {qw}')
             self.get_logger().info(f'dist diff: {dist_diff}, angle diff: {angle_diff_deg}')
 
+            self.publish_position(x, y, z, qx, qy, qz, qw)
+
             return False
         
-        except AttributeError:
-            self.get_logger().info('waiting for feedback')
-            return False
+        self.get_logger().info('waiting for feedback, cannot check waypoint reached')
+        self.publish_position(x, y, z, qx, qy, qz, qw)
+        return False
 
 def main():
     rclpy.init()
