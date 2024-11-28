@@ -7,7 +7,7 @@ from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
-from sklearn.metrics import confusion_matrix, accuracy_score
+# from sklearn.metrics import confusion_matrix, accuracy_score
 import pandas as pd
 import argparse
 import matplotlib.pyplot as plt
@@ -30,9 +30,10 @@ def load_data(folder_path, contour_threshold=3000, visualize=False):
         "blue": [[(150, 50, 50), (255, 255, 255)]]
     }
     
-    image_files = [f for f in os.listdir(folder_path) if f.endswith(('.png'))]
+    image_files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith(('.png'))]
 
     for image_path in image_files:
+        print('image_path:', image_path)
         image = cv2.imread(image_path)
 
         if image is None:
@@ -124,6 +125,8 @@ def evaluate_model(model, test_folder, visualize_misclassified=False):
 
     # Predict labels for the test data
     predicted_labels = model.predict(images)
+
+    predicted_labels = np.argmax(predicted_labels, axis=1)
     
     return predicted_labels
 
@@ -144,5 +147,7 @@ def evaluate_model(model, test_folder, visualize_misclassified=False):
     
 #     # Evaluate the model on the test dataset
 #     print("\nEvaluating the model...")
-#     evaluate_model(model, test_folder)
+#     results = evaluate_model(model, test_folder)
+#     results = [0, 1, 2, 3, 4, 5, 0]
+#     print(np.argmax(np.bincount(results)))
 

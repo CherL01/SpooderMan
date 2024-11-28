@@ -10,7 +10,7 @@ from geometry_msgs.msg import Point, Quaternion, Twist
 from geometry_msgs.msg import PointStamped, PoseStamped, Point, PoseWithCovarianceStamped
 from std_msgs.msg import Float32, Float32MultiArray
 from nav2_msgs.action._navigate_to_pose import NavigateToPose_FeedbackMessage
-# from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model
 
 # etc
 import numpy as np
@@ -21,7 +21,7 @@ from cv_bridge import CvBridge
 import os
 
 # imports from other files
-# from classifier import load_data, evaluate_model
+from .classifier import load_data, evaluate_model
 
 class NavigateMaze(Node):
 
@@ -35,19 +35,19 @@ class NavigateMaze(Node):
             'A_0': (-0.9, 1.81, 0),
             'A_1': (-0.18, 1.81, 0), 
             'A_2': (0.79, 1.81, 0), 
-            'A_3': (1.49, 1.81, 0), 
+            'A_3': (1.70, 1.81, 0), 
             'A_4': (2.73, 1.81, 0), 
             'A_5': (3.53, 1.81, 0), 
             'B_0': (-0.9, 0.89, 0), 
             'B_1': (-0.18, 0.89, 0), 
             'B_2': (0.79, 0.89, 0), 
-            'B_3': (1.49, 0.89, 0), 
+            'B_3': (1.70, 0.89, 0), 
             'B_4': (2.73, 0.89, 0), 
             'B_5': (3.53, 0.89, 0), 
             'C_0': (-0.9, 0.02, 0), 
             'C_1': (-0.18, 0.02, 0), 
             'C_2': (0.79, 0.02, 0), 
-            'C_3': (1.49, 0.02, 0), 
+            'C_3': (1.70, 0.02, 0), 
             'C_4': (2.73, 0.02, 0),
             'C_5': (3.53, 0.02, 0)
             }
@@ -77,8 +77,7 @@ class NavigateMaze(Node):
         self.goal_position = None
 
         ### TESTING PURPOSES ONLY, COMMENT OUT AFTER ###
-        self.test_classification_results = [0, 0, 1, 5]
-        # self.test_classification_results = [1, 2, 2, 2, 1, 5]
+        self.test_classification_results = [3, 2, 2, 1, 5]
         self.classification_index = 0
 
         ### qos profiles
@@ -149,8 +148,9 @@ class NavigateMaze(Node):
         self.frame_count = 0
         self.max_frame_count = 15
         self.save_folder = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "maze_images"))
-        self.model_path = os.path.abspath(os.path.join("dev_ws", "src", "spooderman_navigate_maze", "spooderman_navigate_maze", "classifier_model.h5"))
+        self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "classifier_model.h5"))
         self.test_folder = self.save_folder
+        self.label_to_name = {0: 'nothing', 1: 'left', 2: 'right', 3: 'u-turn', 4: 'u-turn', 5: 'goal'}
         
         self._video_subscriber = self.create_subscription(
 				Image,
@@ -195,7 +195,7 @@ class NavigateMaze(Node):
         
         self.goal_pose = pose
 
-        self.get_logger().info(f'publishing goal: {pose.pose.position.x}, {pose.pose.position.y}, {pose.pose.position.z}, {pose.pose.orientation.x}, {pose.pose.orientation.y}, {pose.pose.orientation.z}, {pose.pose.orientation.w}')
+        # self.get_logger().info(f'publishing goal: {pose.pose.position.x}, {pose.pose.position.y}, {pose.pose.position.z}, {pose.pose.orientation.x}, {pose.pose.orientation.y}, {pose.pose.orientation.z}, {pose.pose.orientation.w}')
 
         self.position_publisher.publish(pose)
 
@@ -288,7 +288,7 @@ class NavigateMaze(Node):
             self.classify_direction_sign()
 
         elif self.state == 1:
-            self.get_logger().info(f'traveling to next waypoint')
+            # self.get_logger().info(f'traveling to next waypoint')
             self.waypoint_reached = self.check_waypoint_reached()
 
         elif self.state == 2:
@@ -304,13 +304,14 @@ class NavigateMaze(Node):
         angular_z_vel = 0.0
         self.publish_velocity(linear_x_vel, angular_z_vel)
         self.get_logger().info('stopping')
+        time.sleep(10)
     
     def take_picture(self):
         
         frame_path = os.path.join(self.save_folder, f"frame_{self.frame_count}.png")
 
         cv2.imwrite(frame_path, self._imgBGR)
-        self.get_logger().info(f'saved frame {frame_path}')
+        # self.get_logger().info(f'saved frame {frame_path}')
         
     def delete_pictures(self):
             
@@ -345,12 +346,19 @@ class NavigateMaze(Node):
 
             else:
 
-                self.frame_count = 0
-
                 ### placeholder for testing purposes, COMMENT OUT AFTER
                 self.classification_result = self.test_classification_results[self.classification_index]
                 self.classification_index += 1
                 ###
+
+                # model = load_model(self.model_path)
+                # results = evaluate_model(model, self.test_folder)
+
+                # # return class that appears most frequently
+                # self.classification_result = np.argmax(np.bincount(results))
+                # self.get_logger().info(f'classification result: {self.classification_result} - {self.label_to_name[self.classification_result]}')
+
+                self.frame_count = 0
 
         except AttributeError:
             self.get_logger().info('no image received yet, cannot classify direction sign')
@@ -480,12 +488,13 @@ class NavigateMaze(Node):
         angle_diff_deg = self.compute_angle_difference(np.array([qx, qy, qz, qw]), np.array([qx_map, qy_map, qz_map, qw_map]))
         dist_diff = math.dist([x, y], [x_map, y_map])
 
-        goal_dist_tolerance = 0.20
+        goal_dist_tolerance_nav2 = 0.10
+        goal_dist_tolerance_amcl = 0.30
         goal_angle_tolerance = 10
         
         # if (abs(x_map - x) < goal_dist_tolerance) and (abs(y_map - y) < goal_dist_tolerance): # and (angle_diff_deg < goal_angle_tolerance):
         if self.distance_remaining is not None:
-            if float(self.distance_remaining) < goal_dist_tolerance: # or (dist_diff < goal_dist_tolerance):
+            if float(self.distance_remaining) < goal_dist_tolerance_nav2 and (dist_diff < goal_dist_tolerance_amcl):
 
                 self.get_logger().info('waypoint reached')
 
@@ -499,14 +508,14 @@ class NavigateMaze(Node):
 
                     return True
                 
-                self.get_logger().info(f'waiting for robot to turn, angle diff: {angle_diff_deg}')
                 self.get_logger().info(f'still travelling to waypoint from {self.maze_position} {self.current_direction}, {self.goal_position} not reached yet')
+                self.get_logger().info(f'waiting for robot to turn, angle diff: {angle_diff_deg}')
                 self.publish_position(x, y, z, qx, qy, qz, qw)
                 return False
 
             self.get_logger().info(f'still travelling to waypoint from {self.maze_position} {self.current_direction}, {self.goal_position} not reached yet')
-            self.get_logger().info(f'x: {x_map}, y: {y_map}, z: {z_map}, qx: {qx_map}, qy: {qy_map}, qz: {qz_map}, qw: {qw_map}')
-            self.get_logger().info(f'goal x: {x}, goal y: {y}, goal z: {z}, goal qx: {qx}, goal qy: {qy}, goal qz: {qz}, goal qw: {qw}')
+            # self.get_logger().info(f'x: {x_map}, y: {y_map}, z: {z_map}, qx: {qx_map}, qy: {qy_map}, qz: {qz_map}, qw: {qw_map}')
+            # self.get_logger().info(f'goal x: {x}, goal y: {y}, goal z: {z}, goal qx: {qx}, goal qy: {qy}, goal qz: {qz}, goal qw: {qw}')
             self.get_logger().info(f'dist diff: {self.distance_remaining}, angle diff: {angle_diff_deg}')
 
             self.publish_position(x, y, z, qx, qy, qz, qw)
