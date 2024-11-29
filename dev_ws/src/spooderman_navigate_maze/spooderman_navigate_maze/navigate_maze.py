@@ -11,6 +11,7 @@ from geometry_msgs.msg import PointStamped, PoseStamped, Point, PoseWithCovarian
 from std_msgs.msg import Float32, Float32MultiArray
 from nav2_msgs.action._navigate_to_pose import NavigateToPose_FeedbackMessage
 from tensorflow.keras.models import load_model
+import joblib
 
 # etc
 import numpy as np
@@ -21,7 +22,9 @@ from cv_bridge import CvBridge
 import os
 
 # imports from other files
-from .classifier import load_data, evaluate_model
+from .cnn import evaluate_model
+from .svm import evaluate_svm
+
 
 class NavigateMaze(Node):
 
@@ -148,9 +151,14 @@ class NavigateMaze(Node):
         self.frame_count = 0
         self.max_frame_count = 15
         self.save_folder = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "maze_images"))
-        self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "classifier_model.h5"))
         self.test_folder = self.save_folder
         self.label_to_name = {0: 'nothing', 1: 'left', 2: 'right', 3: 'u-turn', 4: 'u-turn', 5: 'goal'}
+        self.model = 'SVM' # 'CNN', 'TESTING'
+        
+        if self.model == 'CNN':
+            self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "classifier_model.h5"))
+        elif self.model == 'SVM':
+            self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "svm_model.pkl"))
         
         self._video_subscriber = self.create_subscription(
 				Image,
@@ -346,17 +354,29 @@ class NavigateMaze(Node):
 
             else:
 
-                ### placeholder for testing purposes, COMMENT OUT AFTER
-                self.classification_result = self.test_classification_results[self.classification_index]
-                self.classification_index += 1
-                ###
+                if self.model == 'TESTING':
+                    ### placeholder for testing purposes, COMMENT OUT AFTER
+                    self.classification_result = self.test_classification_results[self.classification_index]
+                    self.classification_index += 1
+                    ###
+                    
+                elif self.model == 'CNN':
 
-                # model = load_model(self.model_path)
-                # results = evaluate_model(model, self.test_folder)
+                    model = load_model(self.model_path)
+                    results = evaluate_model(model, self.test_folder)
 
-                # # return class that appears most frequently
-                # self.classification_result = np.argmax(np.bincount(results))
-                # self.get_logger().info(f'classification result: {self.classification_result} - {self.label_to_name[self.classification_result]}')
+                    # return class that appears most frequently
+                    self.classification_result = np.argmax(np.bincount(results))
+                    
+                elif self.model == 'SVM':
+                    
+                    model = joblib.load(self.model_path)
+                    results = evaluate_svm(model, self.test_folder)
+                    
+                    # return class that appears most frequently
+                    self.classification_result = np.argmax(np.bincount(results))
+                    
+                self.get_logger().info(f'classification result: {self.classification_result} - {self.label_to_name[self.classification_result]}')
 
                 self.frame_count = 0
 
