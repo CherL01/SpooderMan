@@ -149,16 +149,17 @@ class NavigateMaze(Node):
         
         ### classification setup
         self.frame_count = 0
+        self.frame_index = 1
         self.max_frame_count = 15
-        self.save_folder = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "maze_images"))
-        self.test_folder = self.save_folder
+        self.save_folder = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "maze_images_training"))
+        self.test_folder = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "maze_images"))
         self.label_to_name = {0: 'nothing', 1: 'left', 2: 'right', 3: 'u-turn', 4: 'u-turn', 5: 'goal'}
         self.model = 'SVM' # 'CNN', 'TESTING'
         
         if self.model == 'CNN':
             self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "classifier_model.h5"))
         elif self.model == 'SVM':
-            self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "svm_model.pkl"))
+            self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "svm_model_all_data_preprocessed.pkl"))
         
         self._video_subscriber = self.create_subscription(
 				Image,
@@ -175,12 +176,12 @@ class NavigateMaze(Node):
 
     def feedback_callback(self, msg):
         self.distance_remaining, self.estimated_time_remaining = msg.feedback.distance_remaining, msg.feedback.estimated_time_remaining.sec
-        self.get_logger().info(f'received feedback, distance remaining: {self.distance_remaining}, time remaining: {self.estimated_time_remaining}')
+        self.get_logger().info(f'received feedback, distance remaining: {self.distance_remaining}')
         
     def _image_callback(self, img):	
-        self.get_logger().info('receiving image')
+        # self.get_logger().info('receiving image')
         self._imgBGR = CvBridge().imgmsg_to_cv2(img, "bgr8")
-        self.get_logger().info('received image')
+        # self.get_logger().info('received image')
 
     def publish_position(self, x, y, z, qx, qy, qz, qw):
 
@@ -283,6 +284,10 @@ class NavigateMaze(Node):
                 if self.classification_result == 5:
                     self.state = 2
 
+                # did not detect direction sign
+                elif self.classification_result == 0:
+                    self.state = 0
+
                 # did not reach goal yet, follow direction sign
                 else:
                     self.state = 1
@@ -316,10 +321,12 @@ class NavigateMaze(Node):
     
     def take_picture(self):
         
-        frame_path = os.path.join(self.save_folder, f"frame_{self.frame_count}.png")
-
+        frame_path = os.path.join(self.test_folder, f"frame_{self.frame_count}.png")
         cv2.imwrite(frame_path, self._imgBGR)
         # self.get_logger().info(f'saved frame {frame_path}')
+
+        frame_path = os.path.join(self.save_folder, f"frame_{self.frame_index}.png")
+        cv2.imwrite(frame_path, self._imgBGR)
         
     def delete_pictures(self):
             
@@ -372,9 +379,22 @@ class NavigateMaze(Node):
                     
                     model = joblib.load(self.model_path)
                     results = evaluate_svm(model, self.test_folder)
+                    self.get_logger().info(f'results: {results}')
+
+                    f = open("src/spooderman_navigate_maze/maze_image_classifications/classifications.txt", "a")
+                    f.write(str(results) + '-->')
                     
                     # return class that appears most frequently
-                    self.classification_result = np.argmax(np.bincount(results))
+                    # remove 0s from results
+                    results = [result for result in results if result != 0]
+                    if len(results) != 0:
+                        self.classification_result = np.argmax(np.bincount(results))
+
+                    else:
+                        self.classification_result = 0
+
+                    f.write(str(self.classification_result) + '\n')
+                    f.close()
                     
                 self.get_logger().info(f'classification result: {self.classification_result} - {self.label_to_name[self.classification_result]}')
 
@@ -394,10 +414,6 @@ class NavigateMaze(Node):
 
         elif self.action == 3 or self.action == 4:
             self.move('u-turn')
-
-        elif self.action == 0:
-            self.get_logger().info('no wall detected, turning left')
-            self.move('left')
 
     def move(self, turn_direction):
 
@@ -508,7 +524,7 @@ class NavigateMaze(Node):
         angle_diff_deg = self.compute_angle_difference(np.array([qx, qy, qz, qw]), np.array([qx_map, qy_map, qz_map, qw_map]))
         dist_diff = math.dist([x, y], [x_map, y_map])
 
-        goal_dist_tolerance_nav2 = 0.10
+        goal_dist_tolerance_nav2 = 0.05
         goal_dist_tolerance_amcl = 0.30
         goal_angle_tolerance = 10
         

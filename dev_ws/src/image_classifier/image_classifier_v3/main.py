@@ -33,11 +33,13 @@ def extract_hsv_color_mask(image):
     # Define HSV color ranges for red, orange, blue, and green
     color_ranges = {
         "red": [
+            # First red range (0-10)
+            [(0, 120, 130), (2, 255, 255)],
             # Second red range (160-180)
             [(160, 100, 130), (179, 255, 255)]
         ],
         "green": [[(50, 40, 50), (100, 255, 255)]],
-        "blue": [[(100, 50, 50), (150, 255, 255)]]
+        "blue": [[(100, 100, 50), (150, 255, 255)]]
     }
     
     # Convert to HSV for color detection
@@ -61,16 +63,17 @@ def extract_hsv_color_mask(image):
     
     if not contours:
         image = cv2.cvtColor(image, cv2.COLOR_HSV2BGR)
-        return image, combined_mask
+        return image, combined_mask, masks
 
     # Detect the largest contour above the threshold
     largest_contour = max(contours, key=cv2.contourArea)
     x, y, w, h = cv2.boundingRect(largest_contour)
+    max_side = max(w, h)
     cropped_image = image[y:y+h, x:x+w]
     cropped_image = cv2.cvtColor(cropped_image, cv2.COLOR_HSV2BGR)
     combined_mask = combined_mask[y:y+h, x:x+w]
     
-    return cropped_image, combined_mask
+    return cropped_image, combined_mask, masks
 
 def load_data(folder_path, visualize=False):
     labels_path = os.path.join(folder_path, "labels.txt")
@@ -93,11 +96,11 @@ def load_data(folder_path, visualize=False):
             original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2HSV)
             y, x, _ = original_image.shape
             min_brightness = np.min(original_image[:,:,2])
-            max_brightness = np.max(original_image[y//2 - 25:y//2 + 25,x//2 - 25:x//2 + 25,2])
+            max_brightness = np.max(original_image[y//2 - 30:y//2 + 30,x//2 - 150:x//2 + 150,2])
             original_image[:,:,2] = np.clip((original_image[:,:,2] - min_brightness) / (max_brightness - min_brightness) * 255, 0, 255)
             original_image = cv2.cvtColor(original_image, cv2.COLOR_HSV2BGR)
             
-            cropped_image, combined_mask = extract_hsv_color_mask(original_image)
+            cropped_image, combined_mask, masks = extract_hsv_color_mask(original_image)
 
             # Adjust brightness and contrast
             # adjusted_image = adjust_brightness_contrast(original_image)
@@ -167,13 +170,21 @@ def load_data(folder_path, visualize=False):
 def main():
     # Paths to training and testing folders
     train_folder = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "2024F_imgs"))
+    train_folder2 = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "test_data"))
     test_folder = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "test_data"))
-    SVM_SAVE_PATH = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "image_classifier_v3", "svm_model.pkl"))  # Path to save the trained SVM model
+    SVM_SAVE_PATH = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "image_classifier_v3", "svm_model_all_data_preprocessed.pkl"))  # Path to save the trained SVM model
     
     # Load training data
     print("Loading training data...")
     train_data, train_labels = load_data(train_folder)
     print(f"Training data shape: {train_data.shape}, Labels: {len(train_labels)}")
+
+    print("Loading training data...")
+    train_data2, train_labels2 = load_data(train_folder2)
+    print(f"Training data shape: {train_data2.shape}, Labels: {len(train_labels2)}")
+
+    train_data = np.concatenate((train_data, train_data2), axis=0)
+    train_labels = np.concatenate((train_labels, train_labels2), axis=0)
     
     # Load testing data
     print("Loading testing data...")
@@ -190,6 +201,9 @@ def main():
 
     # Load a pre-trained ResNet model
     resnet = ResNet50(weights="imagenet", include_top=False, pooling="avg")
+
+    train_data = preprocess_input(train_data)
+    test_data = preprocess_input(test_data)
     
     # Extract features
     features = resnet.predict(train_data, batch_size=16)
@@ -198,24 +212,24 @@ def main():
     # Train an SVM
     print("Training SVM...")
     classifier = svm.SVC(kernel="linear", C=1.0)
-    classifier.fit(test_features, test_labels_encoded)
+    classifier.fit(features, train_labels_encoded)
     print("SVM training completed.")
     
-    # # Test the SVM on training data
-    # print("Evaluating SVM on training set...")
-    # predictions = classifier.predict(features)
-    # accuracy = accuracy_score(train_labels_encoded, predictions)
-    # print(f"Accuracy: {accuracy:.2%}")
+    # Test the SVM on training data
+    print("Evaluating SVM on training set...")
+    predictions = classifier.predict(features)
+    accuracy = accuracy_score(train_labels_encoded, predictions)
+    print(f"Accuracy: {accuracy:.2%}")
     
-    # # Print a classification report
-    # print("Classification Report:")
-    # target_names = [str(label) for label in label_encoder.classes_]  # Convert labels to strings
-    # print(classification_report(train_labels_encoded, predictions, target_names=target_names))
+    # Print a classification report
+    print("Classification Report:")
+    target_names = [str(label) for label in label_encoder.classes_]  # Convert labels to strings
+    print(classification_report(train_labels_encoded, predictions, target_names=target_names))
 
-    # # Confusion Matrix
-    # print("\nConfusion Matrix:")
-    # cm = confusion_matrix(train_labels_encoded, predictions)
-    # print(cm)
+    # Confusion Matrix
+    print("\nConfusion Matrix:")
+    cm = confusion_matrix(train_labels_encoded, predictions)
+    print(cm)
     
     # Test the SVM
     print("Evaluating SVM...")
@@ -241,45 +255,6 @@ def main():
     # Save the trained SVM
     joblib.dump(classifier, SVM_SAVE_PATH)
     print(f"SVM model saved to {SVM_SAVE_PATH}")
-
-    # Load the SVM model (for future use)
-    loaded_classifier = joblib.load(SVM_SAVE_PATH)
-    print("Loaded SVM model.")
-    
-    # Test the SVM
-    print("Evaluating SVM...")
-    predictions = loaded_classifier.predict(test_features)
-    accuracy = accuracy_score(test_labels_encoded, predictions)
-    print(f"Accuracy: {accuracy:.2%}")
-    
-    # Print a classification report
-    print("Classification Report:")
-    target_names = [str(label) for label in label_encoder.classes_]  # Convert labels to strings
-    print(classification_report(test_labels_encoded, predictions, target_names=target_names))
-
-    # Confusion Matrix
-    print("\nConfusion Matrix:")
-    cm = confusion_matrix(test_labels_encoded, predictions)
-    print(cm)
-    
-    # Visualize misclassified images
-    misclassified_indices = np.where(predictions != test_labels_encoded)[0]  # Indices of misclassified samples
-
-    print(f"\nNumber of misclassified samples: {len(misclassified_indices)}")
-
-    # # Plot a subset of misclassified images
-    # if len(misclassified_indices) > 0:
-    #     num_images_to_plot = min(10, len(misclassified_indices))  # Limit to a reasonable number for display
-    #     plt.figure(figsize=(15, 10))
-    #     for i, idx in enumerate(misclassified_indices[:num_images_to_plot]):
-    #         plt.subplot(2, 5, i + 1)  # Arrange in a grid of 2 rows and 5 columns
-    #         plt.imshow(test_images[idx])  # Assuming `test_images` contains the original images
-    #         plt.title(f"True: {test_labels[idx]}, Pred: {predictions[idx]}")
-    #         plt.axis('off')
-    #     plt.tight_layout()
-    #     plt.show()
-    # else:
-    #     print("No misclassified images to display.")
 
 if __name__ == "__main__":
     main()
