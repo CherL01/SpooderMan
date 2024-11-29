@@ -1,127 +1,285 @@
+import os
 import cv2
 import numpy as np
-import os
+from sklearn import svm
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+from sklearn.preprocessing import LabelEncoder
+from sklearn.utils import shuffle
 import matplotlib.pyplot as plt
 
+import tensorflow as tf
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+import numpy as np
+import os
+import joblib  # Import joblib for saving and loading models
 
-def load_data(folder_path, contour_threshold=100, visualize=False):
+def extract_hsv_color_mask(image):
     """
-    Loads image data and labels, detects and processes contours of specific colors,
-    and crops the image based on the contour size threshold.
-
+    Extracts a color mask from an image using HSV color space.
+    
     Args:
-        folder_path (str): Path to the folder containing the images and labels file.
-        contour_threshold (int): Minimum contour area to crop around. Images with smaller contours are kept original.
-
+        image (np.ndarray): Input BGR image.
+        color_ranges (dict): Dictionary of HSV color ranges.
+    
     Returns:
-        tuple: Normalized image data (numpy array) and corresponding labels (numpy array).
+        np.ndarray: Color mask.
     """
-    labels_path = os.path.join(folder_path, "labels.txt")
-    images = []
-    labels = []
-
+    
     # Define HSV color ranges for red, orange, blue, and green
     color_ranges = {
         "red": [
-            # First red range (0-10)
-            [(120, 100, 100), (130, 255, 255)],
             # Second red range (160-180)
-            [(160, 100, 100), (180, 255, 255)]
+            [(160, 100, 130), (179, 255, 255)]
         ],
-        "green": [[(100, 40, 20), (200, 255, 100)]],
-        "blue": [[(150, 50, 50), (255, 255, 255)]]
+        "green": [[(50, 40, 50), (100, 255, 255)]],
+        "blue": [[(100, 50, 50), (150, 255, 255)]]
     }
+    
+    # Convert to HSV for color detection
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    combined_mask = np.zeros(image.shape[:2], dtype=np.uint8)
+    
+    masks = []
 
+    # Process each color range
+    for color, ranges_list in color_ranges.items():
+        for ranges in ranges_list:
+            lower, upper = ranges
+            mask = cv2.inRange(image, np.array(lower), np.array(upper))
+            combined_mask = cv2.bitwise_or(combined_mask, mask)
+            masks.append(mask)
+
+    # Find contours in the combined mask
+    contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # return image, combined_mask
+    
+    if not contours:
+        image = cv2.cvtColor(image, cv2.COLOR_HSV2BGR)
+        return image, combined_mask
+
+    # Detect the largest contour above the threshold
+    largest_contour = max(contours, key=cv2.contourArea)
+    x, y, w, h = cv2.boundingRect(largest_contour)
+    cropped_image = image[y:y+h, x:x+w]
+    cropped_image = cv2.cvtColor(cropped_image, cv2.COLOR_HSV2BGR)
+    combined_mask = combined_mask[y:y+h, x:x+w]
+    
+    return cropped_image, combined_mask
+
+def load_data(folder_path, visualize=False):
+    labels_path = os.path.join(folder_path, "labels.txt")
+    images = []
+    labels = []
     
     # Read the labels file
     with open(labels_path, "r") as file:
         for line in file:
             image_name, label = line.strip().split(",")
             image_path = os.path.join(folder_path, f"{image_name}.png")
-            image = cv2.imread(image_path)
-
-            if image is None:
-                print(f"Failed to load image: {image_path}")
+            
+            # Load the original image
+            original_image = cv2.imread(image_path)
+            if original_image is None:
+                print(f"Failed to load {image_path}")
                 continue
+            
+            # normalize the image brightness
+            original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2HSV)
+            y, x, _ = original_image.shape
+            min_brightness = np.min(original_image[:,:,2])
+            max_brightness = np.max(original_image[y//2 - 25:y//2 + 25,x//2 - 25:x//2 + 25,2])
+            original_image[:,:,2] = np.clip((original_image[:,:,2] - min_brightness) / (max_brightness - min_brightness) * 255, 0, 255)
+            original_image = cv2.cvtColor(original_image, cv2.COLOR_HSV2BGR)
+            
+            cropped_image, combined_mask = extract_hsv_color_mask(original_image)
 
-            # Brighten the image by increasing its brightness (a simple way is by adding a constant)
-            image = cv2.convertScaleAbs(image, alpha=1.2, beta=20)  # alpha controls contrast, beta controls brightness
+            # Adjust brightness and contrast
+            # adjusted_image = adjust_brightness_contrast(original_image)
 
-            # Convert to HSV for color detection
-            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-            combined_mask = np.zeros(hsv.shape[:2], dtype=np.uint8)
+            # Resize image
+            # resized_image = cv2.resize(adjusted_image, (64, 64))
+            # resized_image = adjusted_image
+            # cropped_image_gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
 
-            # Process each color range
-            for color, ranges_list in color_ranges.items():
-                for ranges in ranges_list:
-                    lower, upper = ranges
-                    mask = cv2.inRange(hsv, np.array(lower), np.array(upper))
-                    combined_mask = cv2.bitwise_or(combined_mask, mask)
+            # # Extract Hough transform visualization
+            # hough_image = extract_hough_features(combined_mask)
+            # keypoints, descriptors, sift_image = extract_sift_features(combined_mask)
+            
+            cropped_image = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)
+            cropped_image_resized = cv2.resize(cropped_image, (16, 16))
+            combined_mask_resized = cv2.resize(combined_mask, (16, 16))
+            
+            if visualize:
+                # Plot all stages in a single figure
+                fig, ax = plt.subplots(2, 3, figsize=(16, 4))
+                ax[0, 0].imshow(cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
+                ax[0, 0].set_title("Original Image")
+                ax[0, 0].axis("off")
 
-            # Find contours in the combined mask
-            contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            # Detect the largest contour above the threshold
-            valid_contours = [contour for contour in contours if cv2.contourArea(contour) > contour_threshold]
-
-            if valid_contours:
-                largest_contour = max(valid_contours, key=cv2.contourArea)
-                x, y, w, h = cv2.boundingRect(largest_contour)
-                cropped_image = image[y:y+h, x:x+w]
+                ax[0, 1].imshow(cropped_image, cmap="gray")
+                ax[0, 1].set_title("Cropped Image")
+                ax[0, 1].axis("off")
                 
-                if visualize:
-                    # Visualization: Prepare images for display
-                    debug_image = image.copy()
-                    cv2.drawContours(debug_image, [largest_contour], -1, (0, 255, 0), 2)  # Green contour
-                    cv2.rectangle(debug_image, (x, y), (x + w, y + h), (255, 0, 0), 2)  # Blue bounding box
-                    
-                    # Visualization using matplotlib
-                    fig, ax = plt.subplots(1, 3, figsize=(15, 5))
-                    ax[0].imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-                    ax[0].set_title("Original Image")
-                    ax[0].axis("off")
-
-                    ax[1].imshow(cv2.cvtColor(debug_image, cv2.COLOR_BGR2RGB))
-                    ax[1].set_title("Detected Contour")
-                    ax[1].axis("off")
-
-                    ax[2].imshow(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
-                    ax[2].set_title("Cropped Image")
-                    ax[2].axis("off")
-
-                    plt.tight_layout()
-                    plt.show()
+                ax[0, 2].imshow(combined_mask, cmap="gray")
+                ax[0, 2].set_title("Combined Mask")
+                ax[0, 2].axis("off")
                 
-            else:
-                cropped_image = image  # Keep original image if no valid contour
-
-                debug_image = image.copy()
+                ax[1, 0].imshow(cropped_image_resized, cmap="gray")
+                ax[1, 0].set_title("Resized Cropped Image")
+                ax[1, 0].axis("off")
                 
-                # Visualization using matplotlib
-                fig, ax = plt.subplots(1, 2, figsize=(15, 5))
-                ax[0].imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-                ax[0].set_title("Original Image")
-                ax[0].axis("off")
-
-                ax[1].imshow(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
-                ax[1].set_title("Cropped Image")
-                ax[1].axis("off")
+                ax[1, 1].imshow(combined_mask_resized, cmap="gray")
+                ax[1, 1].set_title("Resized Combined Mask")
+                ax[1, 1].axis("off")
 
                 plt.tight_layout()
                 plt.show()
-
-            # Resize the cropped or original image to the target size
-            resized_image = cv2.resize(cropped_image, (224, 224))
-            resized_image = resized_image.astype(np.float32) / 255.0  # Normalize to [0, 1]
             
-            # Append to the lists
-            images.append(resized_image)
+            # # Normalize resized image for model input
+            # resized_normalized = cropped_image / 255.0
+            # resized_normalized_flattened = resized_normalized.flatten()
+            
+            # cropped_image = cv2.resize(cropped_image, (64, 64)).flatten()
+            # combined_mask = cv2.resize(combined_mask, (64, 64)).flatten()
+            
+            # cropped_image_resized = cropped_image_resized.flatten()
+            # combined_mask_resized = combined_mask_resized.flatten()
+            
+            # combined_features = np.concatenate([cropped_image, combined_mask, cropped_image_resized, combined_mask_resized])
+            
+            # images.append(combined_features)
+            # labels.append(int(label))
+            
+            cropped_image = cv2.resize(cropped_image, (224, 224))
+            images.append(cropped_image)
             labels.append(int(label))
-
+    
     images = np.array(images)
     labels = np.array(labels)
     return images, labels
 
-if __name__ == "__main__":
+def main():
+    # Paths to training and testing folders
     train_folder = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "2024F_imgs"))
-    images, labels = load_data(train_folder, visualize=True)
+    test_folder = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "test_data"))
+    SVM_SAVE_PATH = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "image_classifier_v3", "svm_model.pkl"))  # Path to save the trained SVM model
+    
+    # Load training data
+    print("Loading training data...")
+    train_data, train_labels = load_data(train_folder)
+    print(f"Training data shape: {train_data.shape}, Labels: {len(train_labels)}")
+    
+    # Load testing data
+    print("Loading testing data...")
+    test_data, test_labels = load_data(test_folder)
+    print(f"Testing data shape: {test_data.shape}, Labels: {len(test_labels)}")
+    
+    # Encode labels
+    label_encoder = LabelEncoder()
+    train_labels_encoded = label_encoder.fit_transform(train_labels)
+    test_labels_encoded = label_encoder.transform(test_labels)
+    
+    # Shuffle training data for randomness
+    train_data, train_labels_encoded = shuffle(train_data, train_labels_encoded, random_state=42)
+
+    # Load a pre-trained ResNet model
+    resnet = ResNet50(weights="imagenet", include_top=False, pooling="avg")
+    
+    # Extract features
+    features = resnet.predict(train_data, batch_size=16)
+    test_features = resnet.predict(test_data, batch_size=16)
+    
+    # Train an SVM
+    print("Training SVM...")
+    classifier = svm.SVC(kernel="linear", C=1.0)
+    classifier.fit(test_features, test_labels_encoded)
+    print("SVM training completed.")
+    
+    # # Test the SVM on training data
+    # print("Evaluating SVM on training set...")
+    # predictions = classifier.predict(features)
+    # accuracy = accuracy_score(train_labels_encoded, predictions)
+    # print(f"Accuracy: {accuracy:.2%}")
+    
+    # # Print a classification report
+    # print("Classification Report:")
+    # target_names = [str(label) for label in label_encoder.classes_]  # Convert labels to strings
+    # print(classification_report(train_labels_encoded, predictions, target_names=target_names))
+
+    # # Confusion Matrix
+    # print("\nConfusion Matrix:")
+    # cm = confusion_matrix(train_labels_encoded, predictions)
+    # print(cm)
+    
+    # Test the SVM
+    print("Evaluating SVM...")
+    predictions = classifier.predict(test_features)
+    accuracy = accuracy_score(test_labels_encoded, predictions)
+    print(f"Accuracy: {accuracy:.2%}")
+    
+    # Print a classification report
+    print("Classification Report:")
+    target_names = [str(label) for label in label_encoder.classes_]  # Convert labels to strings
+    print(classification_report(test_labels_encoded, predictions, target_names=target_names))
+
+    # Confusion Matrix
+    print("\nConfusion Matrix:")
+    cm = confusion_matrix(test_labels_encoded, predictions)
+    print(cm)
+    
+    # Visualize misclassified images
+    misclassified_indices = np.where(predictions != test_labels_encoded)[0]  # Indices of misclassified samples
+
+    print(f"\nNumber of misclassified samples: {len(misclassified_indices)}")
+    
+    # Save the trained SVM
+    joblib.dump(classifier, SVM_SAVE_PATH)
+    print(f"SVM model saved to {SVM_SAVE_PATH}")
+
+    # Load the SVM model (for future use)
+    loaded_classifier = joblib.load(SVM_SAVE_PATH)
+    print("Loaded SVM model.")
+    
+    # Test the SVM
+    print("Evaluating SVM...")
+    predictions = loaded_classifier.predict(test_features)
+    accuracy = accuracy_score(test_labels_encoded, predictions)
+    print(f"Accuracy: {accuracy:.2%}")
+    
+    # Print a classification report
+    print("Classification Report:")
+    target_names = [str(label) for label in label_encoder.classes_]  # Convert labels to strings
+    print(classification_report(test_labels_encoded, predictions, target_names=target_names))
+
+    # Confusion Matrix
+    print("\nConfusion Matrix:")
+    cm = confusion_matrix(test_labels_encoded, predictions)
+    print(cm)
+    
+    # Visualize misclassified images
+    misclassified_indices = np.where(predictions != test_labels_encoded)[0]  # Indices of misclassified samples
+
+    print(f"\nNumber of misclassified samples: {len(misclassified_indices)}")
+
+    # # Plot a subset of misclassified images
+    # if len(misclassified_indices) > 0:
+    #     num_images_to_plot = min(10, len(misclassified_indices))  # Limit to a reasonable number for display
+    #     plt.figure(figsize=(15, 10))
+    #     for i, idx in enumerate(misclassified_indices[:num_images_to_plot]):
+    #         plt.subplot(2, 5, i + 1)  # Arrange in a grid of 2 rows and 5 columns
+    #         plt.imshow(test_images[idx])  # Assuming `test_images` contains the original images
+    #         plt.title(f"True: {test_labels[idx]}, Pred: {predictions[idx]}")
+    #         plt.axis('off')
+    #     plt.tight_layout()
+    #     plt.show()
+    # else:
+    #     print("No misclassified images to display.")
+
+if __name__ == "__main__":
+    main()
