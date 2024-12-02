@@ -171,8 +171,9 @@ def main():
     # Paths to training and testing folders
     train_folder = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "2024F_imgs"))
     train_folder2 = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "test_data"))
+    train_folder3 = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "maze_images_training"))
     test_folder = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "test_data"))
-    SVM_SAVE_PATH = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "image_classifier_v3", "svm_model_all_data_preprocessed.pkl"))  # Path to save the trained SVM model
+    SVM_SAVE_PATH = os.path.abspath(os.path.join("dev_ws", "src", "image_classifier", "image_classifier_v3", "svm_model_all_data_preprocessed_with_maze.pkl"))  # Path to save the trained SVM model
     
     # Load training data
     print("Loading training data...")
@@ -183,8 +184,12 @@ def main():
     train_data2, train_labels2 = load_data(train_folder2)
     print(f"Training data shape: {train_data2.shape}, Labels: {len(train_labels2)}")
 
-    train_data = np.concatenate((train_data, train_data2), axis=0)
-    train_labels = np.concatenate((train_labels, train_labels2), axis=0)
+    print("Loading training data...")
+    train_data3, train_labels3 = load_data(train_folder3)
+    print(f"Training data shape: {train_data3.shape}, Labels: {len(train_labels3)}")
+
+    train_data = np.concatenate((train_data, train_data2, train_data3), axis=0)
+    train_labels = np.concatenate((train_labels, train_labels2, train_labels3), axis=0)
     
     # Load testing data
     print("Loading testing data...")

@@ -159,7 +159,7 @@ class NavigateMaze(Node):
         if self.model == 'CNN':
             self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "classifier_model.h5"))
         elif self.model == 'SVM':
-            self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "svm_model_all_data_preprocessed.pkl"))
+            self.model_path = os.path.abspath(os.path.join("src", "spooderman_navigate_maze", "spooderman_navigate_maze", "svm_model_all_data_preprocessed_with_maze.pkl"))
         
         self._video_subscriber = self.create_subscription(
 				Image,
@@ -327,6 +327,7 @@ class NavigateMaze(Node):
 
         frame_path = os.path.join(self.save_folder, f"frame_{self.frame_index}.png")
         cv2.imwrite(frame_path, self._imgBGR)
+        self.frame_index += 1
         
     def delete_pictures(self):
             
@@ -524,7 +525,7 @@ class NavigateMaze(Node):
         angle_diff_deg = self.compute_angle_difference(np.array([qx, qy, qz, qw]), np.array([qx_map, qy_map, qz_map, qw_map]))
         dist_diff = math.dist([x, y], [x_map, y_map])
 
-        goal_dist_tolerance_nav2 = 0.05
+        goal_dist_tolerance_nav2 = 0.07
         goal_dist_tolerance_amcl = 0.30
         goal_angle_tolerance = 10
         
